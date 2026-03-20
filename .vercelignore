@@ -1,0 +1,15 @@
+**/node_modules
+**/.next
+**/.turbo
+**/out
+**/dist
+**/build
+**/.pnpm-store
+**/coverage
+**/.cache
+**/*.tsbuildinfo
+**/.pnpm-debug.log*
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/.DS_Store

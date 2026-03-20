@@ -1,3 +1,73 @@
 @import "tailwindcss";
 
 @import "@repo/ui/globals.css";
+
+/* Dark Theme  */
+:root {
+  /* Base */
+  --background:            oklch(0.107 0.003 285);  /* #171719 */
+  --foreground:            oklch(0.929 0     0  );  /* #ededed */
+
+  /* Surfaces */
+  --card:                  oklch(0.132 0.003 285);  /* #1c1c1f */
+  --card-foreground:       oklch(0.929 0     0  );
+  --popover:               oklch(0.132 0.003 285);
+  --popover-foreground:    oklch(0.929 0     0  );
+
+  /* Primary — white CTAs on dark */
+  --primary:               oklch(1     0     0  );  /* #ffffff */
+  --primary-foreground:    oklch(0.107 0.003 285);  /* #171719 */
+
+  /* Secondary — slightly elevated surface */
+  --secondary:             oklch(0.175 0.003 285);  /* #242427 */
+  --secondary-foreground:  oklch(0.929 0     0  );
+
+  /* Muted */
+  --muted:                 oklch(0.175 0.003 285);
+  --muted-foreground:      oklch(0.556 0     0  );  /* #888888 */
+
+  /* Accent */
+  --accent:                oklch(0.20  0.003 285);
+  --accent-foreground:     oklch(0.929 0     0  );
+
+  /* Destructive */
+  --destructive:           oklch(0.55  0.22  25 );  /* #e5484d */
+  --destructive-foreground:oklch(0.929 0     0  );
+
+  /* Border & Input */
+  --border:                oklch(0.21  0.003 285);  /* #2e2e32 */
+  --input:                 oklch(0.21  0.003 285);
+
+  /* Focus ring */
+  --ring:                  oklch(0.50  0     0  );
+
+  /* Radius */
+  --radius: 0.5rem;
+
+  /* Semantic Status Colors */
+  --success: oklch(0.723 0.190 142.5);  /* #00c951-ish  */
+  --warning: oklch(0.785 0.168  65  );  /* #f5a524-ish  */
+  --danger:  oklch(0.550 0.220  25  );  /* #e5484d-ish  */
+}
+
+/* Expose custom tokens as Tailwind colour utilities */
+@theme inline {
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger:  var(--danger);
+}
+
+/* Base Typography */
+@layer base {
+  body {
+    font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+    }
+  }
+}

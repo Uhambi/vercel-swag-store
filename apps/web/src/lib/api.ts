@@ -113,13 +113,12 @@ export async function getPromotion(): Promise<ApiResponse<Promotion>> {
 
 // Cart
 export async function getCart(token: string): Promise<ApiResponse<Cart>> {
-  return apiFetch<ApiResponse<Cart>>('/cart', { cartToken: token, cache: 'no-store' });
+  return apiFetch<ApiResponse<Cart>>('/cart', { cartToken: token });
 }
 
 export async function createCart(): Promise<{ cart: Cart; token: string }> {
   const response = await fetch(`${API_URL}/cart/create`, {
     method: 'POST',
-    cache: 'no-store',
     headers: {
       'x-vercel-protection-bypass': API_BYPASS_TOKEN,
     },
@@ -155,7 +154,6 @@ export async function addToCart(
   return apiFetch<ApiResponse<Cart>>('/cart', {
     method: 'POST',
     cartToken: token,
-    cache: 'no-store',
     body: JSON.stringify({ productId, quantity }),
   });
 }
@@ -170,7 +168,6 @@ export async function updateCartItem(
     {
       method: 'PATCH',
       cartToken: token,
-      cache: 'no-store',
       body: JSON.stringify({ quantity }),
     },
   );
@@ -185,7 +182,6 @@ export async function removeCartItem(
     {
       method: 'DELETE',
       cartToken: token,
-      cache: 'no-store',
     },
   );
 }

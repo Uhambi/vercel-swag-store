@@ -2,7 +2,6 @@ import { getCart } from '@/lib/api';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { cookies } from 'next/headers';
-import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { MobileMenu } from '@/components/mobile-menu';
 
@@ -52,9 +51,8 @@ function CartIcon({ count }: { count: number }) {
   );
 }
 
-// Dynamic Cart Count
+// Cart Count
 async function CartCount() {
-  await connection();
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get('cart-token')?.value;
@@ -96,7 +94,9 @@ export function Header() {
           <Suspense fallback={<CartIcon count={0} />}>
             <CartCount />
           </Suspense>
-          <MobileMenu />
+          <Suspense>
+            <MobileMenu />
+          </Suspense>
         </div>
 
       </div>

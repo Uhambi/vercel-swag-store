@@ -12,14 +12,14 @@ import type {
 
 // Configuration
 const API_URL =
-  process.env['API_URL'] ?? 'https://vercel-swag-store-api.vercel.app/api';
+  process.env.API_URL ?? 'https://vercel-swag-store-api.vercel.app/api';
 
-const API_BYPASS_TOKEN = process.env['API_BYPASS_TOKEN'] ?? '';
+const API_BYPASS_TOKEN = process.env.API_BYPASS_TOKEN ?? '';
 
 // Error Class
 export class ApiError extends Error {
-  public readonly code: string;
-  public readonly status: number;
+  readonly code: string;
+  readonly status: number;
 
   constructor(code: string, message: string, status: number) {
     super(message);
@@ -35,7 +35,10 @@ interface FetchOptions extends Omit<RequestInit, 'headers'> {
   headers?: Record<string, string>;
 }
 
-async function apiFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
+async function apiFetch<T>(
+  path: string,
+  options: FetchOptions = {},
+): Promise<T> {
   const { cartToken, headers: extraHeaders, ...fetchOptions } = options;
 
   const headers: Record<string, string> = {
@@ -71,15 +74,25 @@ async function apiFetch<T>(path: string, options: FetchOptions = {}): Promise<T>
 }
 
 // Products
-export async function getProducts(
+export function getProducts(
   params?: ProductListParams,
 ): Promise<PaginatedApiResponse<Product>> {
   const searchParams = new URLSearchParams();
-  if (params?.page !== undefined) searchParams.set('page', String(params.page));
-  if (params?.limit !== undefined) searchParams.set('limit', String(params.limit));
-  if (params?.category) searchParams.set('category', params.category);
-  if (params?.search) searchParams.set('search', params.search);
-  if (params?.featured) searchParams.set('featured', params.featured);
+  if (params?.page !== undefined) {
+    searchParams.set('page', String(params.page));
+  }
+  if (params?.limit !== undefined) {
+    searchParams.set('limit', String(params.limit));
+  }
+  if (params?.category) {
+    searchParams.set('category', params.category);
+  }
+  if (params?.search) {
+    searchParams.set('search', params.search);
+  }
+  if (params?.featured) {
+    searchParams.set('featured', params.featured);
+  }
 
   const query = searchParams.toString();
   return apiFetch<PaginatedApiResponse<Product>>(
@@ -87,13 +100,13 @@ export async function getProducts(
   );
 }
 
-export async function getProduct(idOrSlug: string): Promise<ApiResponse<Product>> {
+export function getProduct(idOrSlug: string): Promise<ApiResponse<Product>> {
   return apiFetch<ApiResponse<Product>>(
     `/products/${encodeURIComponent(idOrSlug)}`,
   );
 }
 
-export async function getProductStock(
+export function getProductStock(
   idOrSlug: string,
 ): Promise<ApiResponse<StockInfo>> {
   return apiFetch<ApiResponse<StockInfo>>(
@@ -102,17 +115,17 @@ export async function getProductStock(
 }
 
 // Categories
-export async function getCategories(): Promise<ApiResponse<Category[]>> {
+export function getCategories(): Promise<ApiResponse<Category[]>> {
   return apiFetch<ApiResponse<Category[]>>('/categories');
 }
 
 // Promotions
-export async function getPromotion(): Promise<ApiResponse<Promotion>> {
+export function getPromotion(): Promise<ApiResponse<Promotion>> {
   return apiFetch<ApiResponse<Promotion>>('/promotions');
 }
 
 // Cart
-export async function getCart(token: string): Promise<ApiResponse<Cart>> {
+export function getCart(token: string): Promise<ApiResponse<Cart>> {
   return apiFetch<ApiResponse<Cart>>('/cart', { cartToken: token });
 }
 
@@ -146,7 +159,7 @@ export async function createCart(): Promise<{ cart: Cart; token: string }> {
   return { cart: json.data, token };
 }
 
-export async function addToCart(
+export function addToCart(
   token: string,
   productId: string,
   quantity: number,
@@ -158,32 +171,26 @@ export async function addToCart(
   });
 }
 
-export async function updateCartItem(
+export function updateCartItem(
   token: string,
   productId: string,
   quantity: number,
 ): Promise<ApiResponse<Cart>> {
-  return apiFetch<ApiResponse<Cart>>(
-    `/cart/${encodeURIComponent(productId)}`,
-    {
-      method: 'PATCH',
-      cartToken: token,
-      body: JSON.stringify({ quantity }),
-    },
-  );
+  return apiFetch<ApiResponse<Cart>>(`/cart/${encodeURIComponent(productId)}`, {
+    method: 'PATCH',
+    cartToken: token,
+    body: JSON.stringify({ quantity }),
+  });
 }
 
-export async function removeCartItem(
+export function removeCartItem(
   token: string,
   productId: string,
 ): Promise<ApiResponse<Cart>> {
-  return apiFetch<ApiResponse<Cart>>(
-    `/cart/${encodeURIComponent(productId)}`,
-    {
-      method: 'DELETE',
-      cartToken: token,
-    },
-  );
+  return apiFetch<ApiResponse<Cart>>(`/cart/${encodeURIComponent(productId)}`, {
+    method: 'DELETE',
+    cartToken: token,
+  });
 }
 
 // Utilities

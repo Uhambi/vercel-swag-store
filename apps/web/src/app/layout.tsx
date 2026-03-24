@@ -1,8 +1,9 @@
-import type { Metadata, Viewport } from 'next';
-import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
-import { Header } from '@/components/header';
+import { GeistSans } from 'geist/font/sans';
+import type { Metadata, Viewport } from 'next';
 import { Footer } from '@/components/footer';
+import { Header } from '@/components/header';
+import { ThemeProvider } from '@/providers/theme-provider';
 import './globals.css';
 
 // Viewport & Theme
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     title: 'Vercel Swag Store',
     description:
       'Official Vercel merchandise. Premium developer apparel, accessories, and gear.',
-  }
+  },
 };
 
 // Layout
@@ -34,11 +35,17 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      lang="en"
+      suppressHydrationWarning
+    >
       <body className="flex min-h-dvh flex-col bg-background text-foreground">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <ThemeProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

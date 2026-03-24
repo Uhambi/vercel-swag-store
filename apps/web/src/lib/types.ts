@@ -15,102 +15,101 @@ export type CategorySlug =
   | 'books';
 
 export interface Category {
-  slug: CategorySlug;
   name: string;
   productCount: number;
+  slug: CategorySlug;
 }
 
 // Product
 export interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  price: number;
-  currency: string;
   category: CategorySlug;
-  images: string[];
-  featured: boolean;
-  tags: string[];
   createdAt: string;
+  currency: string;
+  description: string;
+  featured: boolean;
+  id: string;
+  images: string[];
+  name: string;
+  price: number;
+  slug: string;
+  tags: string[];
 }
 
 export interface ProductListParams {
-  page?: number;
-  limit?: number;
   category?: CategorySlug;
-  search?: string;
   featured?: 'true' | 'false';
+  limit?: number;
+  page?: number;
+  search?: string;
 }
 
 // Stock
 export interface StockInfo {
-  productId: string;
-  stock: number;
   inStock: boolean;
   lowStock: boolean;
+  productId: string;
+  stock: number;
 }
 
 // Promotion
 export interface Promotion {
-  id: string;
-  title: string;
+  active: boolean;
+  code: string;
   description: string;
   discountPercent: number;
-  code: string;
+  id: string;
+  title: string;
   validFrom: string;
   validUntil: string;
-  active: boolean;
 }
 
 // Cart
 export interface CartItem {
+  addedAt: string;
+  lineTotal: number;
+  product: Product;
   productId: string;
   quantity: number;
-  addedAt: string;
-  product: Product;
-  lineTotal: number;
 }
 
 export interface Cart {
-  token: string;
-  items: CartItem[];
-  totalItems: number;
-  subtotal: number;
-  currency: string;
   createdAt: string;
+  currency: string;
+  items: CartItem[];
+  subtotal: number;
+  token: string;
+  totalItems: number;
   updatedAt: string;
 }
 
 // API Response Envelopes
 export interface ApiResponse<T> {
-  success: true;
   data: T;
+  success: true;
 }
 
 export interface PaginatedApiResponse<T> {
-  success: true;
   data: T[];
   meta: {
     pagination: PaginationMeta;
   };
+  success: true;
 }
 
 export interface PaginationMeta {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
+  limit: number;
+  page: number;
+  total: number;
+  totalPages: number;
 }
 
 export interface ApiErrorResponse {
-  success: false;
   error: {
     code: string;
     message: string;
     details?: unknown;
   };
+  success: false;
 }
-

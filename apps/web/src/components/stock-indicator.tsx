@@ -1,9 +1,11 @@
 import { Badge } from '@repo/ui/components/badge';
-import { getProductStock } from '@/lib/api';
+import type { StockInfo } from '@/lib/types';
 
-export async function StockIndicator({ slug }: { slug: string }) {
-  const { data: stock } = await getProductStock(slug);
+interface StockIndicatorProps {
+  stock: StockInfo;
+}
 
+export function StockIndicator({ stock }: StockIndicatorProps) {
   if (!stock.inStock) {
     return (
       <Badge className="w-fit" variant="danger">

@@ -9,7 +9,7 @@ import { Suspense } from 'react';
 import { AddToCartForm } from '@/components/add-to-cart-form';
 import { StockIndicator } from '@/components/stock-indicator';
 import { formatPrice, getProduct, getProductStock } from '@/lib/api';
-import type { Product } from '@/lib/types';
+import type { ApiResponse, Product, StockInfo } from '@/lib/types';
 
 // Page Types
 interface Params {
@@ -54,16 +54,16 @@ function StockSkeleton() {
 
 // Stock section
 async function StockSection({
-  slug,
   productId,
+  stockPromise,
 }: {
-  slug: string;
   productId: string;
+  stockPromise: Promise<ApiResponse<StockInfo>>;
 }) {
-  const { data: stock } = await getProductStock(slug);
+  const { data: stock } = await stockPromise;
   return (
     <div className="flex flex-col gap-3">
-      <StockIndicator slug={slug} />
+      <StockIndicator stock={stock} />
       <AddToCartForm
         inStock={stock.inStock}
         productId={productId}
@@ -81,9 +81,12 @@ export default async function ProductDetailPage({
 }) {
   const { param } = await params;
 
+  const productPromise = getCachedProduct(param);
+  const stockPromise = getProductStock(param);
+
   let product: Product;
   try {
-    const res = await getCachedProduct(param);
+    const res = await productPromise;
     product = res.data;
   } catch {
     notFound();
@@ -149,7 +152,7 @@ export default async function ProductDetailPage({
               </div>
             }
           >
-            <StockSection productId={product.id} slug={param} />
+            <StockSection productId={product.id} stockPromise={stockPromise} />
           </Suspense>
 
           {/* Tags */}

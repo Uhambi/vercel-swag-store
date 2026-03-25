@@ -1,41 +1,17 @@
 'use server';
 
-import { cookies } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import {
   addToCart,
-  createCart,
   removeCartItem,
   updateCartItem,
 } from '@/lib/api';
+import { ensureCart, getCartToken } from '@/lib/cart';
 
-// Helpers
-async function getCartToken(): Promise<string | undefined> {
-  const cookieStore = await cookies();
-  return cookieStore.get('cart-token')?.value;
-}
-
-async function ensureCart(): Promise<string> {
-  const existing = await getCartToken();
-  if (existing) {
-    return existing;
-  }
-
-  const { token } = await createCart();
-  const cookieStore = await cookies();
-  cookieStore.set('cart-token', token, {
-    httpOnly: false,
-    sameSite: 'lax',
-    maxAge: 86_400, // 24 h — matches API expiry
-    path: '/',
-  });
-
-  return token;
-}
-
-// Actions
 export async function addItemAction(productId: string, quantity: number) {
   const token = await ensureCart();
   await addToCart(token, productId, quantity);
+  revalidatePath('/', 'layout');
 }
 
 export async function updateItemAction(itemId: string, quantity: number) {
@@ -44,6 +20,7 @@ export async function updateItemAction(itemId: string, quantity: number) {
     return;
   }
   await updateCartItem(token, itemId, quantity);
+  revalidatePath('/cart');
 }
 
 export async function removeItemAction(itemId: string) {
@@ -52,4 +29,5 @@ export async function removeItemAction(itemId: string) {
     return;
   }
   await removeCartItem(token, itemId);
+  revalidatePath('/cart');
 }

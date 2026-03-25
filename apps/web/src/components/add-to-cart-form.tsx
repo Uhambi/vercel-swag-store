@@ -1,9 +1,9 @@
 'use client';
 
 import { Button } from '@repo/ui/components/button';
-import { Minus, Plus } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import { addItemAction } from '@/actions/cart';
+import { QuantityStepper } from '@/components/quantity-stepper';
 
 interface AddToCartFormProps {
   inStock: boolean;
@@ -45,30 +45,14 @@ export function AddToCartForm({
   return (
     <div className="flex flex-col gap-4">
       {/* Quantity Stepper */}
-      <div className="flex items-center gap-1">
-        <span className="mr-2 text-muted-foreground text-sm">Qty</span>
-        <button
-          aria-label="Decrease quantity"
-          className="flex size-9 cursor-pointer items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-accent disabled:pointer-events-none disabled:opacity-40"
-          disabled={!inStock || quantity <= 1}
-          onClick={decrement}
-          type="button"
-        >
-          <Minus className="size-4" />
-        </button>
-        <span className="flex w-10 items-center justify-center font-medium text-foreground text-sm tabular-nums">
-          {quantity}
-        </span>
-        <button
-          aria-label="Increase quantity"
-          className="flex size-9 cursor-pointer items-center justify-center rounded-md border border-border text-foreground transition-colors hover:bg-accent disabled:pointer-events-none disabled:opacity-40"
-          disabled={!inStock || quantity >= maxQty}
-          onClick={increment}
-          type="button"
-        >
-          <Plus className="size-4" />
-        </button>
-      </div>
+      <QuantityStepper
+        decrementDisabled={!inStock || quantity <= 1}
+        incrementDisabled={!inStock || quantity >= maxQty}
+        label={<span className="mr-2 text-muted-foreground text-sm">Qty</span>}
+        onDecrement={decrement}
+        onIncrement={increment}
+        quantity={quantity}
+      />
 
       {/* Add to Cart Button */}
       <Button

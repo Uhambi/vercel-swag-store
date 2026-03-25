@@ -79,9 +79,6 @@ export default async function ProductDetailPage({
 }: {
   params: Promise<Params>;
 }) {
-  'use cache';
-  cacheLife('hours');
-
   const { param } = await params;
 
   let product: Product;

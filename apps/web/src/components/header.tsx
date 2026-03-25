@@ -1,10 +1,10 @@
 import { ShoppingCart } from 'lucide-react';
-import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { MobileMenu } from '@/components/mobile-menu';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { getCart } from '@/lib/api';
+import { getCartToken } from '@/lib/cart';
 
 // Vercel Logo
 function VercelLogo({ className }: { className?: string }) {
@@ -63,8 +63,7 @@ function CartIcon({ count }: { count: number }) {
 // Cart Count
 async function CartCount() {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('cart-token')?.value;
+    const token = await getCartToken();
     if (!token) {
       return <CartIcon count={0} />;
     }

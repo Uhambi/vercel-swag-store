@@ -65,7 +65,9 @@ async function CategorySearchShell({
   children: React.ReactNode;
 }) {
   const { data: categories } = await getCachedCategories();
-  return <SearchPageShell categories={categories}>{children}</SearchPageShell>;
+  return (
+    <SearchPageShell categories={categories}>{children}</SearchPageShell>
+  );
 }
 
 // Result Summary
@@ -110,8 +112,10 @@ async function SearchResults({
 }) {
   const params = await searchParams;
   const q = typeof params.q === 'string' ? params.q : '';
-  const category = typeof params.category === 'string' ? params.category : '';
-  const pageParam = typeof params.page === 'string' ? params.page : '1';
+  const category =
+    typeof params.category === 'string' ? params.category : '';
+  const pageParam =
+    typeof params.page === 'string' ? params.page : '1';
   const page = Math.max(1, Number.parseInt(pageParam, 10) || 1);
 
   const { data: products, meta } = await getProducts({

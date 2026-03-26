@@ -1,11 +1,11 @@
 'use client';
 
-import { useNavigationTransition } from '@/components/navigation-context';
 import { Pagination, type PaginationProps } from '@/components/pagination';
+import { useRouterTransition } from '@/components/router-transition-provider';
 
 export function TransitionPagination(
   props: Omit<PaginationProps, 'onNavigate'>,
 ) {
-  const nav = useNavigationTransition();
-  return <Pagination {...props} onNavigate={nav?.navigate} />;
+  const { navigate } = useRouterTransition();
+  return <Pagination {...props} onNavigate={navigate} />;
 }

@@ -3,7 +3,8 @@ import { GeistSans } from 'geist/font/sans';
 import type { Metadata, Viewport } from 'next';
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
-import { ThemeContextProvider } from '@/components/theme-context';
+import { RouterTransitionProvider } from '@/components/router-transition-provider';
+import { ThemeContextProvider } from '@/components/theme-provider';
 import './globals.css';
 
 // Viewport & Theme
@@ -42,9 +43,11 @@ export default function RootLayout({
     >
       <body className="flex min-h-dvh flex-col bg-background text-foreground">
         <ThemeContextProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <RouterTransitionProvider>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </RouterTransitionProvider>
         </ThemeContextProvider>
       </body>
     </html>

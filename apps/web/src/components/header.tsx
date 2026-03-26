@@ -2,6 +2,7 @@ import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { MobileMenu } from '@/components/mobile-menu';
+import { NavLink } from '@/components/nav-link';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { getCart } from '@/lib/api';
 import { getCartToken } from '@/lib/cart';
@@ -20,23 +21,9 @@ function VercelLogo({ className }: { className?: string }) {
   );
 }
 
-// Nav Link
-function NavLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      className="rounded-md px-3 py-2 font-medium text-muted-foreground text-sm transition-colors hover:bg-accent hover:text-foreground"
-      href={href}
-    >
-      {children}
-    </Link>
-  );
-}
+// Nav link styles
+const navLinkClass =
+  'rounded-md px-3 py-2 font-medium text-muted-foreground text-sm transition-colors hover:bg-accent hover:text-foreground data-active:text-foreground';
 
 // Cart Icon
 function CartIcon({ count }: { count: number }) {
@@ -93,8 +80,14 @@ export function Header() {
             aria-label="Main navigation"
             className="hidden items-center md:flex"
           >
-            <NavLink href="/">Home</NavLink>
-            <NavLink href="/search">Search</NavLink>
+            <Suspense>
+              <NavLink className={navLinkClass} href="/">
+                Home
+              </NavLink>
+              <NavLink className={navLinkClass} href="/search">
+                Search
+              </NavLink>
+            </Suspense>
           </nav>
         </div>
 

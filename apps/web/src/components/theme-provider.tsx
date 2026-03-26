@@ -16,11 +16,7 @@ function ThemeReadyGuard({ children }: { children: ReactNode }) {
 
 export function ThemeContextProvider({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="dark"
-      enableSystem={false}
-    >
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <ThemeReadyGuard>{children}</ThemeReadyGuard>
     </ThemeProvider>
   );

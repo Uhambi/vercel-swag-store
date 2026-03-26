@@ -1,11 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import {
-  addToCart,
-  removeCartItem,
-  updateCartItem,
-} from '@/lib/api';
+import { addToCart, removeCartItem, updateCartItem } from '@/lib/api';
 import { ensureCart, getCartToken } from '@/lib/cart';
 
 export async function addItemAction(productId: string, quantity: number) {

@@ -150,9 +150,7 @@ export function Pagination({
               className={`${baseBtn} ${clickableBtn}`}
               href={buildHref(page, searchParams)}
               key={page}
-              onClick={(e) =>
-                handleClick(e, buildHref(page, searchParams))
-              }
+              onClick={(e) => handleClick(e, buildHref(page, searchParams))}
             >
               {page}
             </Link>

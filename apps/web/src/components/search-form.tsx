@@ -2,7 +2,7 @@
 
 import { RotateCcw, Search } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import type { Category } from '@/lib/types';
 
 interface SearchFormProps {
@@ -21,18 +21,16 @@ export function SearchForm({
   const [ownPending, startTransition] = useTransition();
 
   const isPending = isPendingProp ?? ownPending;
-  const navigate = useCallback(
-    (url: string, opts?: { scroll?: boolean }) => {
-      if (navigateProp) {
-        navigateProp(url, opts);
-      } else {
-        startTransition(() => {
-          router.push(url, opts);
-        });
-      }
-    },
-    [navigateProp, router],
-  );
+
+  function navigate(url: string, opts?: { scroll?: boolean }) {
+    if (navigateProp) {
+      navigateProp(url, opts);
+    } else {
+      startTransition(() => {
+        router.push(url, opts);
+      });
+    }
+  }
 
   const currentQuery = searchParams.get('q') ?? '';
   const currentCategory = searchParams.get('category') ?? '';
@@ -44,20 +42,17 @@ export function SearchForm({
     setQuery(currentQuery);
   }, [currentQuery]);
 
-  const buildAndNavigate = useCallback(
-    (q: string, category: string) => {
-      const params = new URLSearchParams();
-      if (q.trim()) {
-        params.set('q', q.trim());
-      }
-      if (category) {
-        params.set('category', category);
-      }
-      const qs = params.toString();
-      navigate(`/search${qs ? `?${qs}` : ''}`, { scroll: false });
-    },
-    [navigate],
-  );
+  function buildAndNavigate(q: string, category: string) {
+    const params = new URLSearchParams();
+    if (q.trim()) {
+      params.set('q', q.trim());
+    }
+    if (category) {
+      params.set('category', category);
+    }
+    const qs = params.toString();
+    navigate(`/search${qs ? `?${qs}` : ''}`, { scroll: false });
+  }
 
   function cancelDebounce() {
     if (debounceRef.current) {

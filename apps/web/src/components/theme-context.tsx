@@ -1,6 +1,6 @@
 'use client';
 
-import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { ThemeProvider } from 'next-themes';
 import { type ReactNode, useEffect } from 'react';
 
 function ThemeReadyGuard({ children }: { children: ReactNode }) {
@@ -14,14 +14,14 @@ function ThemeReadyGuard({ children }: { children: ReactNode }) {
   return children;
 }
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
+export function ThemeContextProvider({ children }: { children: ReactNode }) {
   return (
-    <NextThemesProvider
+    <ThemeProvider
       attribute="class"
       defaultTheme="dark"
       enableSystem={false}
     >
       <ThemeReadyGuard>{children}</ThemeReadyGuard>
-    </NextThemesProvider>
+    </ThemeProvider>
   );
 }

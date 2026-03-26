@@ -3,7 +3,7 @@ import { GeistSans } from 'geist/font/sans';
 import type { Metadata, Viewport } from 'next';
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
-import { ThemeProvider } from '@/providers/theme-provider';
+import { ThemeContextProvider } from '@/components/theme-context';
 import './globals.css';
 
 // Viewport & Theme
@@ -41,11 +41,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="flex min-h-dvh flex-col bg-background text-foreground">
-        <ThemeProvider>
+        <ThemeContextProvider>
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
-        </ThemeProvider>
+        </ThemeContextProvider>
       </body>
     </html>
   );

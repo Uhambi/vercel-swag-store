@@ -100,6 +100,7 @@ export function CartItem({ item }: CartItemProps) {
 
           <Button
             aria-label={`Remove ${product.name} from cart`}
+            className="cursor-pointer"
             disabled={isPending}
             onClick={handleRemove}
             size="sm"

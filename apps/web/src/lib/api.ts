@@ -71,11 +71,18 @@ async function apiFetch<T>(
 
   if (!response.ok) {
     const err = json as ApiErrorResponse;
-    throw new ApiError(
+    const error = new ApiError(
       err.error?.code ?? 'UNKNOWN',
       err.error?.message ?? `HTTP ${response.status}`,
       response.status,
     );
+    console.error(
+      `[api] ${options.method ?? 'GET'} ${path} →`,
+      error.status,
+      error.code,
+      error.message,
+    );
+    throw error;
   }
 
   return json as T;

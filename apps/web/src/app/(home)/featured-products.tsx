@@ -3,12 +3,19 @@ import { cacheLife } from 'next/cache';
 import Link from 'next/link';
 import { ProductCard } from '@/components/product-card';
 import { getProducts } from '@/lib/api';
+import type { Product } from '@/lib/types';
 
 export async function FeaturedProducts() {
   'use cache';
   cacheLife('minutes');
 
-  const { data: products } = await getProducts({ featured: 'true', limit: 6 });
+  let products: Product[];
+  try {
+    const { data } = await getProducts({ featured: 'true', limit: 6 });
+    products = data;
+  } catch {
+    return null;
+  }
 
   if (products.length === 0) {
     return null;

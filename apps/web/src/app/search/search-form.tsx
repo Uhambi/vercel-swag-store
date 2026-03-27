@@ -1,6 +1,6 @@
 'use client';
 
-import { RotateCcw, Search } from 'lucide-react';
+import { ArrowRight, RotateCcw, Search } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState, useTransition } from 'react';
 import type { Category } from '@/lib/types';
@@ -81,6 +81,12 @@ export function SearchForm({
     buildAndNavigate(query, category);
   }
 
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    cancelDebounce();
+    buildAndNavigate(query, currentCategory);
+  }
+
   function handleClear() {
     cancelDebounce();
     setQuery('');
@@ -103,18 +109,32 @@ export function SearchForm({
     Boolean(searchParams.get('page'));
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row">
+    <form className="flex flex-col gap-3 sm:flex-row" onSubmit={handleSubmit}>
       {/* Search Input */}
       <div className="relative flex-1">
-        <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+        <button
+          aria-label="Search"
+          className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+          type="submit"
+        >
+          <Search className="size-4" />
+        </button>
         <input
           aria-label="Search products"
-          className="h-10 w-full rounded-lg border border-border bg-card pr-4 pl-9 text-foreground text-sm placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+          className="h-10 w-full rounded-lg border border-border bg-card pr-10 pl-9 text-foreground text-sm placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
           onChange={(e) => handleQueryChange(e.target.value)}
           placeholder="Search products..."
           type="text"
           value={query}
         />
+        <button
+          aria-label="Submit search"
+          className="absolute inset-y-0 right-0 flex cursor-pointer items-center px-3 text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
+          disabled={isPending || !query.trim()}
+          type="submit"
+        >
+          <ArrowRight className="size-4" />
+        </button>
       </div>
 
       {/* Category Select */}
@@ -142,6 +162,6 @@ export function SearchForm({
         <RotateCcw className="size-3.5" />
         Clear
       </button>
-    </div>
+    </form>
   );
 }

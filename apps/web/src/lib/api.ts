@@ -33,13 +33,19 @@ export class ApiError extends Error {
 interface FetchOptions extends Omit<RequestInit, 'headers'> {
   cartToken?: string;
   headers?: Record<string, string>;
+  onResponse?: (response: Response) => void;
 }
 
 async function apiFetch<T>(
   path: string,
   options: FetchOptions = {},
 ): Promise<T> {
-  const { cartToken, headers: extraHeaders, ...fetchOptions } = options;
+  const {
+    cartToken,
+    headers: extraHeaders,
+    onResponse,
+    ...fetchOptions
+  } = options;
 
   const headers: Record<string, string> = {
     'x-vercel-protection-bypass': API_BYPASS_TOKEN,
@@ -58,6 +64,8 @@ async function apiFetch<T>(
     ...fetchOptions,
     headers,
   });
+
+  onResponse?.(response);
 
   const json = (await response.json()) as T | ApiErrorResponse;
 
@@ -130,23 +138,15 @@ export function getCart(token: string): Promise<ApiResponse<Cart>> {
 }
 
 export async function createCart(): Promise<{ cart: Cart; token: string }> {
-  const response = await fetch(`${API_URL}/cart/create`, {
+  let token: string | null = null;
+
+  const json = await apiFetch<ApiResponse<Cart>>('/cart/create', {
     method: 'POST',
-    headers: {
-      'x-vercel-protection-bypass': API_BYPASS_TOKEN,
+    onResponse: (response) => {
+      token = response.headers.get('x-cart-token');
     },
   });
 
-  if (!response.ok) {
-    const err = (await response.json()) as ApiErrorResponse;
-    throw new ApiError(
-      err.error?.code ?? 'CART_CREATE_FAILED',
-      err.error?.message ?? `Failed to create cart: HTTP ${response.status}`,
-      response.status,
-    );
-  }
-
-  const token = response.headers.get('x-cart-token');
   if (!token) {
     throw new ApiError(
       'MISSING_CART_TOKEN',
@@ -155,7 +155,6 @@ export async function createCart(): Promise<{ cart: Cart; token: string }> {
     );
   }
 
-  const json = (await response.json()) as ApiResponse<Cart>;
   return { cart: json.data, token };
 }
 

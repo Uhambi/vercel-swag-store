@@ -1,12 +1,12 @@
-'use cache';
-
+import { Skeleton } from '@repo/ui/components/skeleton';
 import { cacheLife } from 'next/cache';
 import Link from 'next/link';
 import { ProductCard } from '@/components/product-card';
 import { getProducts } from '@/lib/api';
 
 export async function FeaturedProducts() {
-  cacheLife('hours');
+  'use cache';
+  cacheLife('minutes');
 
   const { data: products } = await getProducts({ featured: 'true', limit: 6 });
 
@@ -41,5 +41,32 @@ export async function FeaturedProducts() {
         ))}
       </div>
     </section>
+  );
+}
+
+export function FeaturedProductsSkeleton() {
+  return (
+    <>
+      <div className="mb-8 flex items-end justify-between">
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-8 w-52" />
+          <Skeleton className="h-4 w-40" />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            className="overflow-hidden rounded-xl border border-border bg-card"
+            key={`skeleton-${i.toString()}`}
+          >
+            <Skeleton className="aspect-square w-full" />
+            <div className="flex flex-col gap-2 p-4">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/4" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }

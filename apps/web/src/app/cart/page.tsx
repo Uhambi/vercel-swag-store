@@ -1,39 +1,15 @@
 import { Button } from '@repo/ui/components/button';
-import { Skeleton } from '@repo/ui/components/skeleton';
-import { ShoppingBag } from 'lucide-react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Suspense } from 'react';
-import { CartItem } from '@/components/cart-item';
-import { formatPrice, getCart } from '@/lib/api';
-import { getCartToken } from '@/lib/cart';
+import { formatPrice } from '@/lib/api';
+import { getCachedCart, getCartToken } from '@/lib/cart';
 import type { Cart } from '@/lib/types';
+import { CartItem } from './cart-item';
+import EmptyCart from './empty-cart';
 
-// Page Metadata
 export const metadata: Metadata = { title: 'Your Cart' };
 
-// Skeletons
-function CartSkeleton() {
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <Skeleton className="h-8 w-32" />
-      <Skeleton className="mt-2 h-4 w-20" />
-      <div className="mt-8 lg:grid lg:grid-cols-12 lg:gap-12">
-        <div className="flex flex-col gap-4 lg:col-span-7">
-          <Skeleton className="h-28 w-full rounded-lg" />
-          <Skeleton className="h-28 w-full rounded-lg" />
-          <Skeleton className="h-28 w-full rounded-lg" />
-        </div>
-        <div className="mt-8 lg:col-span-5 lg:mt-0">
-          <Skeleton className="h-64 w-full rounded-lg" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Cart content
-async function CartContent() {
+export default async function CartPage() {
   const token = await getCartToken();
 
   if (!token) {
@@ -42,7 +18,7 @@ async function CartContent() {
 
   let cart: Cart | null = null;
   try {
-    const response = await getCart(token);
+    const response = await getCachedCart(token);
     cart = response.data;
   } catch {
     // Token expired or invalid
@@ -111,34 +87,5 @@ async function CartContent() {
         </aside>
       </div>
     </div>
-  );
-}
-
-// Empty Cart
-function EmptyCart() {
-  return (
-    <div className="mx-auto flex max-w-7xl flex-col items-center justify-center px-4 py-24 sm:px-6 lg:px-8">
-      <div className="flex size-16 items-center justify-center rounded-full bg-card">
-        <ShoppingBag className="size-8 text-muted-foreground" />
-      </div>
-      <h1 className="mt-6 font-bold text-2xl text-foreground">
-        Your cart is empty
-      </h1>
-      <p className="mt-2 text-center text-muted-foreground">
-        Looks like you haven't added any items yet.
-      </p>
-      <Button asChild className="mt-6" size="lg">
-        <Link href="/search">Browse Products</Link>
-      </Button>
-    </div>
-  );
-}
-
-// Cart Page
-export default function CartPage() {
-  return (
-    <Suspense fallback={<CartSkeleton />}>
-      <CartContent />
-    </Suspense>
   );
 }

@@ -4,8 +4,7 @@ import { Suspense } from 'react';
 import { MobileMenu } from '@/components/mobile-menu';
 import { NavLink } from '@/components/nav-link';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { getCart } from '@/lib/api';
-import { getCartToken } from '@/lib/cart';
+import { getCachedCart, getCartToken } from '@/lib/cart';
 
 // Vercel Logo
 function VercelLogo({ className }: { className?: string }) {
@@ -54,7 +53,7 @@ async function CartCount() {
     if (!token) {
       return <CartIcon count={0} />;
     }
-    const { data } = await getCart(token);
+    const { data } = await getCachedCart(token);
     return <CartIcon count={data.totalItems} />;
   } catch {
     return <CartIcon count={0} />;

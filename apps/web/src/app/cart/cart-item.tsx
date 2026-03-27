@@ -54,6 +54,7 @@ export function CartItem({ item }: CartItemProps) {
             alt={product.name}
             className="object-cover"
             fill
+            loading="eager"
             sizes="96px"
             src={image}
           />

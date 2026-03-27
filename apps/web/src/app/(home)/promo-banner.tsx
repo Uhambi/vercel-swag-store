@@ -1,11 +1,11 @@
-'use cache';
-
+import { Skeleton } from '@repo/ui/components/skeleton';
 import { Tag } from 'lucide-react';
 import { cacheLife } from 'next/cache';
 import { getPromotion } from '@/lib/api';
 import type { Promotion } from '@/lib/types';
 
 export async function PromoBanner() {
+  'use cache';
   cacheLife('minutes');
 
   let promo: Promotion;
@@ -45,10 +45,20 @@ export async function PromoBanner() {
         {/* Promo code */}
         <span className="flex items-center gap-1.5">
           <span className="text-muted-foreground text-xs">Code:</span>
-          <code className="rounded bg-background/60 px-2 py-0.5 font-bold font-mono text-foreground text-xs tracking-wider ring-1 ring-border">
+          <code className="rounded bg-background/60 px-2 py-0.5 font-bold text-foreground text-xs tracking-wider ring-1 ring-border">
             {promo.code}
           </code>
         </span>
+      </div>
+    </div>
+  );
+}
+
+export function PromoBannerSkeleton() {
+  return (
+    <div className="border-border border-b bg-secondary py-3">
+      <div className="mx-auto flex max-w-7xl justify-center px-4">
+        <Skeleton className="h-5 w-96 max-w-full" />
       </div>
     </div>
   );

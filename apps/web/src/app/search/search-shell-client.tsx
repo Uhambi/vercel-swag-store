@@ -2,18 +2,18 @@
 
 import type { ReactNode } from 'react';
 import { useRouterTransition } from '@/components/router-transition-provider';
-import { SearchForm } from '@/components/search-form';
 import type { Category } from '@/lib/types';
+import { SearchForm } from './search-form';
 
-interface SearchPageShellProps {
+interface SearchShellClientProps {
   categories: Category[];
   children: ReactNode;
 }
 
-export function SearchPageShell({
+export function SearchShellClient({
   categories,
   children,
-}: SearchPageShellProps) {
+}: SearchShellClientProps) {
   const { isPending, navigate } = useRouterTransition();
 
   return (
@@ -33,3 +33,4 @@ export function SearchPageShell({
     </>
   );
 }
+

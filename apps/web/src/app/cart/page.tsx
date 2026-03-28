@@ -56,7 +56,7 @@ export default async function CartPage() {
               <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground text-sm">Subtotal</dt>
                 <dd className="font-medium text-foreground text-sm tabular-nums">
-                  {formatPrice(cart.subtotal)}
+                  {formatPrice(cart.subtotal, cart.currency)}
                 </dd>
               </div>
               <div className="flex items-center justify-between">
@@ -69,7 +69,7 @@ export default async function CartPage() {
                 <div className="flex items-center justify-between">
                   <dt className="font-semibold text-foreground">Total</dt>
                   <dd className="font-semibold text-foreground tabular-nums">
-                    {formatPrice(cart.subtotal)}
+                    {formatPrice(cart.subtotal, cart.currency)}
                   </dd>
                 </div>
               </div>

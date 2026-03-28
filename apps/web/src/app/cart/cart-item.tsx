@@ -76,7 +76,7 @@ export function CartItem({ item }: CartItemProps) {
             {product.name}
           </Link>
           <span className="shrink-0 font-semibold text-foreground text-sm tabular-nums">
-            {formatPrice(lineTotal)}
+            {formatPrice(lineTotal, product.currency)}
           </span>
         </div>
 
@@ -85,7 +85,7 @@ export function CartItem({ item }: CartItemProps) {
           <div className="flex items-center gap-1">
             {quantity > 1 && (
               <span className="mr-2 text-muted-foreground text-xs tabular-nums">
-                {formatPrice(product.price)} each
+                {formatPrice(product.price, product.currency)} each
               </span>
             )}
             <QuantityStepper

@@ -35,7 +35,7 @@ export function ProductCard({ product }: { product: Product }) {
           {product.name}
         </h3>
         <p className="font-semibold text-foreground text-sm">
-          {formatPrice(product.price)}
+          {formatPrice(product.price, product.currency)}
         </p>
       </div>
     </Link>

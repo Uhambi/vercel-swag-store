@@ -67,17 +67,20 @@ async function apiFetch<T>(
 
   onResponse?.(response);
 
-  const json = (await response.json()) as T | ApiErrorResponse;
-
   if (!response.ok) {
-    const err = json as ApiErrorResponse;
+    let errorData: ApiErrorResponse | null = null;
+    try {
+      errorData = (await response.json()) as ApiErrorResponse;
+    } catch {
+      // non-JSON error body
+    }
     const error = new ApiError(
-      err.error?.code ?? 'UNKNOWN',
-      err.error?.message ?? `HTTP ${response.status}`,
+      errorData?.error?.code ?? 'UNKNOWN',
+      errorData?.error?.message ?? `HTTP ${response.status}`,
       response.status,
     );
     console.error(
-      `[api] ${options.method ?? 'GET'} ${path} →`,
+      `[api] ${options.method ?? 'GET'} ${path} -`,
       error.status,
       error.code,
       error.message,
@@ -85,7 +88,7 @@ async function apiFetch<T>(
     throw error;
   }
 
-  return json as T;
+  return (await response.json()) as T;
 }
 
 // Products
@@ -200,9 +203,9 @@ export function removeCartItem(
 }
 
 // Utilities
-export function formatPrice(cents: number): string {
+export function formatPrice(cents: number, currency = 'USD'): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency,
   }).format(cents / 100);
 }

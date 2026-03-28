@@ -3,7 +3,6 @@
 import { Menu, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { NavLink } from '@/components/nav-link';
-import { ThemeToggle } from '@/components/theme-toggle';
 
 // Mobile Menu
 export function MobileMenu() {
@@ -45,13 +44,13 @@ export function MobileMenu() {
   const close = () => setIsOpen(false);
 
   return (
-    <div className="relative md:hidden" ref={containerRef}>
+    <div className="md:hidden" ref={containerRef}>
       {/* Hamburger toggle */}
       <button
         aria-controls="mobile-nav-menu"
         aria-expanded={isOpen}
         aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
-        className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+        className="cursor-pointer rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
         onClick={() => setIsOpen((prev) => !prev)}
         type="button"
       >
@@ -62,7 +61,7 @@ export function MobileMenu() {
       {isOpen && (
         <div
           aria-label="Navigation menu"
-          className="fade-in slide-in-from-top-2 absolute top-full right-0 z-50 mt-1.5 w-44 animate-in rounded-lg border border-border bg-card shadow-lg duration-150"
+          className="fade-in slide-in-from-top-2 absolute top-full right-4 z-50 mt-1.5 w-50 animate-in rounded-lg border border-border bg-card shadow-lg duration-150"
           id="mobile-nav-menu"
           role="dialog"
         >
@@ -81,14 +80,6 @@ export function MobileMenu() {
             >
               Search
             </NavLink>
-
-            {/* Theme toggle */}
-            <div className="mt-0.5 flex items-center justify-between border-border border-t px-3 py-2">
-              <span className="font-medium text-muted-foreground text-sm">
-                Theme
-              </span>
-              <ThemeToggle />
-            </div>
           </nav>
         </div>
       )}

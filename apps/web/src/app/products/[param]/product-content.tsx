@@ -66,7 +66,7 @@ export async function ProductContent({
               {product.name}
             </h1>
             <p className="font-semibold text-2xl text-foreground">
-              {formatPrice(product.price)}
+              {formatPrice(product.price, product.currency)}
             </p>
           </div>
 

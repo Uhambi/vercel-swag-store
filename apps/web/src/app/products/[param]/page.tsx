@@ -24,20 +24,22 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { param } = await params;
-  try {
-    const { data: product } = await getCachedProduct(param);
-    return {
-      title: product.name,
-      description: product.description,
-      openGraph: {
-        title: product.name,
-        description: product.description,
-        images: product.images[0] ? [product.images[0]] : [],
-      },
-    };
-  } catch {
+  const result = await getCachedProduct(param);
+
+  if (!result) {
     return { title: 'Product Not Found' };
   }
+
+  const { data: product } = result;
+  return {
+    title: product.name,
+    description: product.description,
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      images: product.images[0] ? [product.images[0]] : [],
+    },
+  };
 }
 
 export default async function ProductDetailPage({
@@ -60,5 +62,9 @@ export default async function ProductDetailPage({
 async function getCachedProduct(slug: string) {
   'use cache: remote';
   cacheLife('hours');
-  return getProduct(slug);
+  try {
+    return await getProduct(slug);
+  } catch {
+    return null;
+  }
 }

@@ -6,12 +6,12 @@ import { SearchShellClient } from './search-shell-client';
 
 export async function SearchShell({ children }: { children: ReactNode }) {
   let categories: Category[] = [];
-  try {
-    const { data } = await getCachedCategories();
-    categories = data;
-  } catch {
-    // fall back to empty categories on error
+  const result = await getCachedCategories();
+
+  if (result) {
+    categories = result.data;
   }
+
   return (
     <SearchShellClient categories={categories}>{children}</SearchShellClient>
   );
@@ -20,5 +20,9 @@ export async function SearchShell({ children }: { children: ReactNode }) {
 async function getCachedCategories() {
   'use cache: remote';
   cacheLife('hours');
-  return await getCategories();
+  try {
+    return await getCategories();
+  } catch {
+    return null;
+  }
 }

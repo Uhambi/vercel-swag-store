@@ -22,7 +22,7 @@ function VercelLogo({ className }: { className?: string }) {
 
 // Nav link styles
 const navLinkClass =
-  'rounded-md px-3 py-2 font-medium text-muted-foreground text-sm transition-colors hover:bg-accent hover:text-foreground data-active:text-foreground';
+  'rounded-md px-3 py-2 font-medium text-muted-foreground text-sm transition-colors hover:bg-accent hover:text-foreground data-active:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/70';
 
 // Cart Icon
 function CartIcon({ count }: { count: number }) {
@@ -31,7 +31,7 @@ function CartIcon({ count }: { count: number }) {
       aria-label={
         count > 0 ? `Cart — ${count} item${count === 1 ? '' : 's'}` : 'Cart'
       }
-      className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+      className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/70"
       href="/cart"
     >
       <span className="relative block">
@@ -68,7 +68,7 @@ export function Header() {
         {/* Left: Logo + Nav */}
         <div className="flex items-center gap-2">
           <Link
-            className="flex items-center gap-2.5 font-semibold text-foreground transition-opacity hover:opacity-80"
+            className="flex items-center gap-2.5 rounded-md font-semibold text-foreground transition-opacity hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/70"
             href="/"
           >
             <VercelLogo className="size-4.5" />

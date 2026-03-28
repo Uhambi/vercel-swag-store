@@ -112,16 +112,10 @@ export function SearchForm({
     <form className="flex flex-col gap-3 sm:flex-row" onSubmit={handleSubmit}>
       {/* Search Input */}
       <div className="relative flex-1">
-        <button
-          aria-label="Search"
-          className="absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
-          type="submit"
-        >
-          <Search className="size-4" />
-        </button>
+        <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground transition-colors" />
         <input
           aria-label="Search products"
-          className="h-10 w-full rounded-lg border border-border bg-card pr-10 pl-9 text-foreground text-sm placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+          className="h-10 w-full rounded-lg border border-border bg-card pr-10 pl-9 text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/70"
           onChange={(e) => handleQueryChange(e.target.value)}
           placeholder="Search products..."
           type="text"
@@ -140,7 +134,7 @@ export function SearchForm({
       {/* Category Select */}
       <select
         aria-label="Filter by category"
-        className="h-10 cursor-pointer rounded-lg border border-border bg-card px-3 text-foreground text-sm focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring sm:w-48"
+        className="h-10 cursor-pointer rounded-lg border border-border bg-card px-3 text-foreground text-sm focus:outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/70 sm:w-48"
         onChange={(e) => handleCategoryChange(e.target.value)}
         value={currentCategory}
       >

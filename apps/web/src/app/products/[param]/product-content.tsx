@@ -4,7 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { formatPrice, getProduct } from '@/lib/api';
+import { getProduct } from '@/lib/api';
+import { formatPrice } from '@/lib/format';
 import type { Product } from '@/lib/types';
 
 export async function ProductContent({

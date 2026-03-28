@@ -1,9 +1,10 @@
 'use client';
 
 import { Button } from '@repo/ui/components/button';
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { addItemAction } from '@/actions/cart';
 import { QuantityStepper } from '@/components/quantity-stepper';
+import { useAction } from '@/hooks/use-action';
 
 interface AddToCartFormProps {
   inStock: boolean;
@@ -18,7 +19,7 @@ export function AddToCartForm({
 }: AddToCartFormProps) {
   const maxQty = Math.min(stock, 10);
   const [quantity, setQuantity] = useState(1);
-  const [isPending, startTransition] = useTransition();
+  const { isPending, execute } = useAction();
 
   function decrement() {
     setQuantity((q) => Math.max(1, q - 1));
@@ -29,7 +30,7 @@ export function AddToCartForm({
   }
 
   function handleSubmit() {
-    startTransition(async () => {
+    execute(async () => {
       await addItemAction(productId, quantity);
       setQuantity(1);
     });

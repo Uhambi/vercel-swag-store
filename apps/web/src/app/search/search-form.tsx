@@ -2,8 +2,9 @@
 
 import { ArrowRight, RotateCcw, Search } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { useTransition } from 'react';
 import type { Category } from '@/lib/types';
+import { useSearchQuery } from './use-search-query';
 
 interface SearchFormProps {
   categories: Category[];
@@ -35,13 +36,6 @@ export function SearchForm({
   const currentQuery = searchParams.get('q') ?? '';
   const currentCategory = searchParams.get('category') ?? '';
 
-  const [query, setQuery] = useState(currentQuery);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    setQuery(currentQuery);
-  }, [currentQuery]);
-
   function buildAndNavigate(q: string, category: string) {
     const params = new URLSearchParams();
     if (q.trim()) {
@@ -54,54 +48,27 @@ export function SearchForm({
     navigate(`/search${qs ? `?${qs}` : ''}`, { scroll: false });
   }
 
-  function cancelDebounce() {
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-      debounceRef.current = null;
-    }
-  }
-
-  function handleQueryChange(value: string) {
-    setQuery(value);
-    cancelDebounce();
-
-    if (value.trim().length >= 3) {
-      debounceRef.current = setTimeout(() => {
-        buildAndNavigate(value, currentCategory);
-      }, 300);
-    } else if (value.trim().length === 0 && currentQuery) {
-      debounceRef.current = setTimeout(() => {
-        buildAndNavigate('', currentCategory);
-      }, 300);
-    }
-  }
+  const { query, onChange, commit } = useSearchQuery({
+    currentQuery,
+    currentCategory,
+    onSearch: buildAndNavigate,
+  });
 
   function handleCategoryChange(category: string) {
-    cancelDebounce();
+    commit();
     buildAndNavigate(query, category);
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    cancelDebounce();
+    commit();
     buildAndNavigate(query, currentCategory);
   }
 
   function handleClear() {
-    cancelDebounce();
-    setQuery('');
+    commit('');
     navigate('/search', { scroll: false });
   }
-
-  useEffect(() => {
-    const ref = debounceRef;
-    return () => {
-      if (ref.current) {
-        clearTimeout(ref.current);
-        ref.current = null;
-      }
-    };
-  }, []);
 
   const hasActiveFilters =
     Boolean(currentQuery) ||
@@ -116,7 +83,7 @@ export function SearchForm({
         <input
           aria-label="Search products"
           className="h-10 w-full rounded-lg border border-border bg-card pr-10 pl-9 text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/70"
-          onChange={(e) => handleQueryChange(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
           placeholder="Search products..."
           type="text"
           value={query}

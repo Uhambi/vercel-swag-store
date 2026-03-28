@@ -1,8 +1,8 @@
 import { Button } from '@repo/ui/components/button';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { formatPrice } from '@/lib/api';
 import { getCachedCart, getCartToken } from '@/lib/cart';
+import { formatPrice } from '@/lib/format';
 import type { Cart } from '@/lib/types';
 import { CartItem } from './cart-item';
 import EmptyCart from './empty-cart';

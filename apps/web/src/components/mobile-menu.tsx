@@ -1,44 +1,20 @@
 'use client';
 
 import { Menu, X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink } from '@/components/nav-link';
+import { useClickOutside } from '@/hooks/use-click-outside';
 
 export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useClickOutside<HTMLDivElement>(
+    () => setIsOpen(false),
+    isOpen,
+  );
 
   useEffect(() => {
     setIsOpen(false);
   }, []);
-
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    function handleClickOutside(e: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    }
-
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen]);
 
   const close = () => setIsOpen(false);
 

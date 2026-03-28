@@ -4,10 +4,10 @@ import { Button } from '@repo/ui/components/button';
 import { Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTransition } from 'react';
 import { removeItemAction, updateItemAction } from '@/actions/cart';
 import { QuantityStepper } from '@/components/quantity-stepper';
-import { formatPrice } from '@/lib/api';
+import { useAction } from '@/hooks/use-action';
+import { formatPrice } from '@/lib/format';
 import type { CartItem as CartItemType } from '@/lib/types';
 
 interface CartItemProps {
@@ -17,27 +17,21 @@ interface CartItemProps {
 export function CartItem({ item }: CartItemProps) {
   const { product, quantity, lineTotal, productId } = item;
   const image = product.images[0];
-  const [isPending, startTransition] = useTransition();
+  const { isPending, execute } = useAction();
 
   function handleDecrement() {
     if (quantity <= 1) {
       return;
     }
-    startTransition(async () => {
-      await updateItemAction(productId, quantity - 1);
-    });
+    execute(() => updateItemAction(productId, quantity - 1));
   }
 
   function handleIncrement() {
-    startTransition(async () => {
-      await updateItemAction(productId, quantity + 1);
-    });
+    execute(() => updateItemAction(productId, quantity + 1));
   }
 
   function handleRemove() {
-    startTransition(async () => {
-      await removeItemAction(productId);
-    });
+    execute(() => removeItemAction(productId));
   }
 
   return (

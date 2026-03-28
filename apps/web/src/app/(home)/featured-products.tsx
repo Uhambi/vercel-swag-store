@@ -6,7 +6,7 @@ import { getProducts } from '@/lib/api';
 import type { Product } from '@/lib/types';
 
 export async function FeaturedProducts() {
-  'use cache';
+  'use cache: remote';
   cacheLife('minutes');
 
   let products: Product[];

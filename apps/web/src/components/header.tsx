@@ -79,14 +79,12 @@ export function Header() {
             aria-label="Main navigation"
             className="hidden items-center md:flex"
           >
-            <Suspense>
-              <NavLink className={navLinkClass} href="/">
-                Home
-              </NavLink>
-              <NavLink className={navLinkClass} href="/search">
-                Search
-              </NavLink>
-            </Suspense>
+            <NavLink className={navLinkClass} href="/">
+              Home
+            </NavLink>
+            <NavLink className={navLinkClass} href="/search">
+              Search
+            </NavLink>
           </nav>
         </div>
 
@@ -99,9 +97,7 @@ export function Header() {
           <Suspense fallback={<CartIcon count={0} />}>
             <CartCount />
           </Suspense>
-          <Suspense>
-            <MobileMenu />
-          </Suspense>
+          <MobileMenu />
         </div>
       </div>
     </header>

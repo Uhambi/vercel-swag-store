@@ -4,7 +4,6 @@ import { Menu, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { NavLink } from '@/components/nav-link';
 
-// Mobile Menu
 export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);

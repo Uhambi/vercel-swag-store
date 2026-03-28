@@ -5,7 +5,7 @@ import { getPromotion } from '@/lib/api';
 import type { Promotion } from '@/lib/types';
 
 export async function PromoBanner() {
-  'use cache';
+  'use cache: remote';
   cacheLife('minutes');
 
   let promo: Promotion;

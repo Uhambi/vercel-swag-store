@@ -27,7 +27,7 @@ export async function ensureCart(): Promise<string> {
 }
 
 export async function getCachedCart(token: string): Promise<ApiResponse<Cart>> {
-  'use cache';
+  'use cache: remote';
   cacheTag('cart');
   cacheLife('minutes');
   return await getCart(token);

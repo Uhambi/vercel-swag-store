@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import type { MouseEvent, ReactNode } from 'react';
 import { useRouterTransition } from '@/components/router-transition-provider';
 
@@ -15,10 +15,9 @@ interface NavLinkProps {
 export function NavLink({ href, children, className, onClick }: NavLinkProps) {
   const { navigate } = useRouterTransition();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href);
-  const isCurrentPage = pathname === href && searchParams.size === 0;
+  const isCurrentPage = pathname === href;
 
   function handleClick(e: MouseEvent<HTMLAnchorElement>) {
     if (e.button !== 0 || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) {

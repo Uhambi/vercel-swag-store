@@ -1,12 +1,21 @@
 import type { Metadata } from 'next';
 import { cacheLife } from 'next/cache';
 import { Suspense } from 'react';
-import { getProduct, getProductStock } from '@/lib/api';
+import { getProduct, getProductStock, getProducts } from '@/lib/api';
 import { ProductContent } from './product-content';
 import { StockSection, StockSectionSkeleton } from './stock-section';
 
 interface Params {
   param: string;
+}
+
+export async function generateStaticParams(): Promise<Params[]> {
+  try {
+    const { data: products } = await getProducts({ limit: 100 });
+    return products.map((product) => ({ param: product.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({
@@ -49,7 +58,7 @@ export default async function ProductDetailPage({
 }
 
 async function getCachedProduct(slug: string) {
-  'use cache';
+  'use cache: remote';
   cacheLife('hours');
   return getProduct(slug);
 }

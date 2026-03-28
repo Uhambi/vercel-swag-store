@@ -18,7 +18,7 @@ export async function SearchShell({ children }: { children: ReactNode }) {
 }
 
 async function getCachedCategories() {
-  'use cache';
+  'use cache: remote';
   cacheLife('hours');
   return await getCategories();
 }

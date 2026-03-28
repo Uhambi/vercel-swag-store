@@ -3,7 +3,8 @@
 import { Minus, Plus } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-const focusStyles = 'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/70';
+const focusStyles =
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/70';
 const sizeConfig = {
   sm: { button: 'size-8', display: 'w-8', icon: 'size-3.5' },
   default: { button: 'size-9', display: 'w-10', icon: 'size-4' },

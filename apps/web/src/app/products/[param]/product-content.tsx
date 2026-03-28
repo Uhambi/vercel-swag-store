@@ -14,7 +14,7 @@ export async function ProductContent({
   slug: string;
   children: ReactNode;
 }) {
-  'use cache';
+  'use cache: remote';
   cacheLife('hours');
 
   let product: Product;

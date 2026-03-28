@@ -18,7 +18,7 @@ export async function SearchResults({
   category: string;
   page: number;
 }) {
-  'use cache';
+  'use cache: remote';
   cacheLife('minutes');
 
   const isSearching = Boolean(q) || Boolean(category);

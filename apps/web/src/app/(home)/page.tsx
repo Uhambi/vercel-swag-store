@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description:
     'Official Vercel merchandise. Premium developer apparel, accessories, and gear.',
   openGraph: {
-    title: 'Vercel Swag Store — Official Developer Merch',
+    title: 'Vercel Swag Store - Official Developer Merch',
     description:
       'Shop premium developer apparel, drinkware, accessories, and gear from Vercel. Rep your favorite framework.',
     url: '/',
@@ -21,13 +21,13 @@ export const metadata: Metadata = {
         url: '/vercel.svg',
         width: 1200,
         height: 630,
-        alt: 'Vercel Swag Store — Official developer merchandise',
+        alt: 'Vercel Swag Store - Official developer merchandise',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Vercel Swag Store — Official Developer Merch',
+    title: 'Vercel Swag Store - Official Developer Merch',
     description:
       'Shop premium developer apparel, drinkware, accessories, and gear from Vercel.',
   },

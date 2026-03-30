@@ -45,14 +45,14 @@ export async function generateMetadata({
     description: product.description,
     openGraph: {
       type: 'article',
-      title: `${product.name} — Vercel Swag Store`,
+      title: `${product.name} - Vercel Swag Store`,
       description: product.description,
       url: `/products/${product.slug}`,
       ...(ogImage && { images: [ogImage] }),
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${product.name} — Vercel Swag Store`,
+      title: `${product.name} - Vercel Swag Store`,
       description: product.description,
       ...(product.images[0] && { images: [product.images[0]] }),
     },

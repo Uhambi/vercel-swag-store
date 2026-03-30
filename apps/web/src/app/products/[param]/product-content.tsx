@@ -39,7 +39,7 @@ export async function ProductContent({
       </Link>
 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
-        {/* Left — Image */}
+        {/* Left - Image */}
         <div className="relative aspect-square overflow-hidden rounded-xl border border-border bg-card">
           {image ? (
             <Image
@@ -57,7 +57,7 @@ export async function ProductContent({
           )}
         </div>
 
-        {/* Right — Info */}
+        {/* Right - Info */}
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <p className="font-medium text-muted-foreground text-sm uppercase tracking-wider">
@@ -75,7 +75,7 @@ export async function ProductContent({
             {product.description}
           </p>
 
-          {/* Stock + Add to Cart — dynamic, never cached */}
+          {/* Stock + Add to Cart - dynamic, never cached */}
           {children}
 
           {/* Tags */}

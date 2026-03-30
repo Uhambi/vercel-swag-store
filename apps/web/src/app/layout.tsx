@@ -53,7 +53,7 @@ export const metadata: Metadata = {
         url: '/vercel.svg',
         width: 1200,
         height: 630,
-        alt: 'Vercel Swag Store — Official developer merchandise',
+        alt: 'Vercel Swag Store - Official developer merchandise',
       },
     ],
   },

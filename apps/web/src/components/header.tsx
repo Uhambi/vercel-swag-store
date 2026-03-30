@@ -29,7 +29,7 @@ function CartIcon({ count }: { count: number }) {
   return (
     <Link
       aria-label={
-        count > 0 ? `Cart — ${count} item${count === 1 ? '' : 's'}` : 'Cart'
+        count > 0 ? `Cart - ${count} item${count === 1 ? '' : 's'}` : 'Cart'
       }
       className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/70"
       href="/cart"

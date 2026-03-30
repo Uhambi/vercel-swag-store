@@ -65,7 +65,7 @@
   --primary: oklch(1 0 0);
   --primary-foreground: oklch(0.107 0.003 285);
 
-  /* Secondary — slightly elevated surface */
+  /* Secondary - slightly elevated surface */
   --secondary: oklch(0.175 0.003 285);
   --secondary-foreground: oklch(0.929 0 0);
 

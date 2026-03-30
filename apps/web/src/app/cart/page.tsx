@@ -9,16 +9,15 @@ import EmptyCart from './empty-cart';
 
 export const metadata: Metadata = {
   title: 'Your Cart',
-  description:
-    'Review your Vercel swag selections and proceed to checkout.',
+  description: 'Review your Vercel swag selections and proceed to checkout.',
   openGraph: {
-    title: 'Your Cart — Vercel Swag Store',
+    title: 'Your Cart - Vercel Swag Store',
     description: 'Review your Vercel swag selections and proceed to checkout.',
     url: '/cart',
   },
   twitter: {
     card: 'summary',
-    title: 'Your Cart — Vercel Swag Store',
+    title: 'Your Cart - Vercel Swag Store',
     description: 'Review your Vercel swag selections and proceed to checkout.',
   },
   robots: { index: false },

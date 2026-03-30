@@ -1,55 +1,63 @@
 # Vercel Swag Store
 
-Next.js 16 storefront demonstrating modern React patterns, caching strategies, and server-side architecture on Vercel.
+A full-featured e-commerce storefront built with **Next.js 16**, **React 19**, and **Turborepo**. Demonstrates modern React patterns - Server Components, Suspense streaming, `use cache`, Server Actions, and `useTransition` navigations - all deployed on Vercel.
 
-## Getting Started
+Based on the [Next.js Foundations starter](https://github.com/vercel/nextjs-foundations-starter) from the [Vercel Academy - Next.js Foundations](https://vercel.com/academy/nextjs-foundations) course.
+
+## Quick Start
 
 ```bash
-# Install dependencies
+# Prerequisites: Node.js 24, pnpm 10
 pnpm install
 
-# Run both apps in dev mode
-pnpm dev
+# Development (all workspaces)
+pnpm dev            # → http://localhost:3000
 
-# Type check all packages
-pnpm check-types
-
-# Build all packages
+# Production build
 pnpm build
 
-# Format and lint
-pnpm format
+# Type-check all packages
+pnpm check-types
+
+# Lint & format (Biome)
 pnpm lint
+pnpm format
+pnpm check          # lint + format in one pass
 ```
 
-## Project Structure
+## Workspaces
 
-```
-nextjs-foundations-starter/
-├── apps/
-│   └── web/                    # Marketing site (localhost:3000)
-├── packages/
-│   └── ui/                     # Shared UI components
-├── turbo.json                  # Turborepo configuration
-├── biome.jsonc                 # Biome linting/formatting
-└── package.json
-```
-
-## Apps
-
-- **web** (`apps/web`) - Marketing site running on port 3000
-
-## Packages
-
-- **@repo/ui** - Shared React components
+| Workspace | Package | Description                                              |
+| --- | --- |----------------------------------------------------------|
+| `apps/web` | `@repo/web` | Next.js storefront - pages, API integration, cart logic  |
+| `packages/ui` | `@repo/ui` | Shared React component library (Button, Badge, Skeleton) |
 
 ## Tech Stack
 
-- [Next.js 16](https://nextjs.org/) - React framework
-- [Turborepo](https://turbo.build/repo) - Monorepo build system
-- [pnpm](https://pnpm.io/) - Package manager
-- [Biome](https://biomejs.dev/) - Linting and formatting
-- [TypeScript](https://www.typescriptlang.org/) - Type safety
+| Layer | Technology |
+| --- | --- |
+| Framework | [Next.js 16](https://nextjs.org/) (App Router, React 19) |
+| Language | [TypeScript 5.9](https://www.typescriptlang.org/) |
+| Styling | [Tailwind CSS 4](https://tailwindcss.com/) + CSS custom properties |
+| UI primitives | [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/) |
+| Icons | [Lucide React](https://lucide.dev/) |
+| Fonts | [Geist Sans](https://vercel.com/font) |
+| Theming | [next-themes](https://github.com/pacocoursey/next-themes) (light / dark) |
+| Monorepo | [Turborepo 2](https://turbo.build/repo) + [pnpm 10](https://pnpm.io/) |
+| Linting | [Biome 2](https://biomejs.dev/) via [Ultracite](https://github.com/haydenbleasel/ultracite) preset |
+| Hosting | [Vercel](https://vercel.com/) |
+
+## Scripts Reference
+
+| Command | Scope | Description |
+| --- | --- | --- |
+| `pnpm dev` | all | Start all workspaces in dev mode |
+| `pnpm build` | all | Production build via Turborepo |
+| `pnpm start` | all | Start production server |
+| `pnpm check-types` | all | TypeScript type-check every package |
+| `pnpm lint` | root | Biome lint |
+| `pnpm format` | root | Biome format (auto-fix) |
+| `pnpm check` | root | Biome lint + format in one pass |
 
 ## License
 

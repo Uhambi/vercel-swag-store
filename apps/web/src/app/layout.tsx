@@ -1,3 +1,4 @@
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { GeistSans } from 'geist/font/sans';
 import type { Metadata, Viewport } from 'next';
 import { Footer } from '@/components/footer';
@@ -92,6 +93,7 @@ export default function RootLayout({
             <Footer />
           </RouterTransitionProvider>
         </ThemeContextProvider>
+        <SpeedInsights />
       </body>
     </html>
   );

@@ -95,28 +95,16 @@
   color-scheme: dark;
 }
 
-/* Expose custom tokens as Tailwind colour utilities */
 @theme inline {
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
 }
 
-/* Base Typography & Theme Transitions */
 @layer base {
   body {
     font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-}
-
-/* Smooth theme transitions */
-html[data-theme-ready] *,
-html[data-theme-ready] *::before,
-html[data-theme-ready] *::after {
-  transition-timing-function: ease;
-  transition-duration: 200ms;
-  transition-property:
-    color, background-color, border-color, outline-color, fill, stroke;
 }

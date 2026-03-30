@@ -12,7 +12,7 @@ export default function EmptyCart() {
         Your cart is empty
       </h1>
       <p className="mt-2 text-center text-muted-foreground">
-        Looks like you haven't added any items yet.
+        Looks like you haven&apos;t added any items yet.
       </p>
       <Button asChild className="mt-6" size="lg">
         <Link href="/search">Browse Products</Link>

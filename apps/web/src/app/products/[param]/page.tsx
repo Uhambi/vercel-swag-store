@@ -31,13 +31,30 @@ export async function generateMetadata({
   }
 
   const { data: product } = result;
+  const ogImage = product.images[0]
+    ? {
+        url: product.images[0],
+        width: 1200,
+        height: 630,
+        alt: product.name,
+      }
+    : undefined;
+
   return {
     title: product.name,
     description: product.description,
     openGraph: {
-      title: product.name,
+      type: 'article',
+      title: `${product.name} — Vercel Swag Store`,
       description: product.description,
-      images: product.images[0] ? [product.images[0]] : [],
+      url: `/products/${product.slug}`,
+      ...(ogImage && { images: [ogImage] }),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${product.name} — Vercel Swag Store`,
+      description: product.description,
+      ...(product.images[0] && { images: [product.images[0]] }),
     },
   };
 }

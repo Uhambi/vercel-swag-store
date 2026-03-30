@@ -14,19 +14,63 @@ export const viewport: Viewport = {
 };
 
 // Root Metadata
+const SITE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : 'https://swag.vercel.app';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'Vercel Swag Store',
     template: '%s | Vercel Swag Store',
   },
   description:
     'Official Vercel merchandise. Premium developer apparel, accessories, and gear. Built with Next.js.',
+  keywords: [
+    'Vercel',
+    'swag',
+    'merchandise',
+    'developer',
+    'apparel',
+    'Next.js',
+    't-shirts',
+    'hoodies',
+    'accessories',
+  ],
   openGraph: {
     type: 'website',
     siteName: 'Vercel Swag Store',
-    title: 'Vercel Swag Store',
+    title: {
+      default: 'Vercel Swag Store',
+      template: '%s | Vercel Swag Store',
+    },
     description:
       'Official Vercel merchandise. Premium developer apparel, accessories, and gear.',
+    url: SITE_URL,
+    locale: 'en_US',
+    images: [
+      {
+        url: '/vercel.svg',
+        width: 1200,
+        height: 630,
+        alt: 'Vercel Swag Store — Official developer merchandise',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: {
+      default: 'Vercel Swag Store',
+      template: '%s | Vercel Swag Store',
+    },
+    description:
+      'Official Vercel merchandise. Premium developer apparel, accessories, and gear.',
+    creator: '@vercel',
+    site: '@vercel',
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

@@ -7,7 +7,23 @@ import { PageContentSkeleton, ProductGridSkeleton } from './skeletons';
 interface SearchParams
   extends Promise<Record<string, string | string[] | undefined>> {}
 
-export const metadata: Metadata = { title: 'Search' };
+export const metadata: Metadata = {
+  title: 'Search',
+  description:
+    'Browse and search the full collection of Vercel swag — apparel, drinkware, accessories, and more.',
+  openGraph: {
+    title: 'Browse Products — Vercel Swag Store',
+    description:
+      'Search and filter the full collection of Vercel developer merchandise.',
+    url: '/search',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Browse Products — Vercel Swag Store',
+    description:
+      'Search and filter the full collection of Vercel developer merchandise.',
+  },
+};
 
 export default function SearchPage({
   searchParams,

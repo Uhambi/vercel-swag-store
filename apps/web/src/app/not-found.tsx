@@ -1,7 +1,16 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-export const metadata: Metadata = { title: 'Page Not Found' };
+export const metadata: Metadata = {
+  title: 'Page Not Found',
+  description: 'The page you are looking for does not exist or has been moved.',
+  openGraph: {
+    title: 'Page Not Found — Vercel Swag Store',
+    description:
+      'The page you are looking for does not exist or has been moved.',
+  },
+  robots: { index: false },
+};
 
 export default function NotFound() {
   return (

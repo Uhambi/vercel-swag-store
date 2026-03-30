@@ -6,7 +6,7 @@ import type { PaginationMeta, Product, ProductListParams } from '@/lib/types';
 import { SearchEmptyState } from './empty-state';
 import { ResultSummary } from './result-summary';
 
-const DEFAULT_LIMIT = 12;
+const DEFAULT_LIMIT = 9;
 const SEARCH_LIMIT = 5;
 
 export async function SearchResults({

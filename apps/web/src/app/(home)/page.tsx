@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     url: '/',
     images: [
       {
-        url: '/vercel.svg',
+        url: '/next.svg',
         width: 1200,
         height: 630,
         alt: 'Vercel Swag Store - Official developer merchandise',

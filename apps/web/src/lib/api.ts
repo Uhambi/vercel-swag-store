@@ -185,11 +185,14 @@ export function updateCartItem(
   productId: string,
   quantity: number,
 ): Promise<ApiResponse<Cart>> {
-  return apiFetch<ApiResponse<Cart>>(`/cart/${encodeURIComponent(productId)}`, {
-    method: 'PATCH',
-    cartToken: token,
-    body: JSON.stringify({ quantity }),
-  });
+  return apiFetch<ApiResponse<Cart>>(
+    `/cart1/${encodeURIComponent(productId)}`,
+    {
+      method: 'PATCH',
+      cartToken: token,
+      body: JSON.stringify({ quantity }),
+    },
+  );
 }
 
 export function removeCartItem(

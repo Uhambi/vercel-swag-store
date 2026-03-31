@@ -1,25 +1,25 @@
 # @repo/web - Vercel Swag Store
 
-The main Next.js 16 storefront application. Renders the product catalogue, search, and cart - powered by React 19 Server Components with Suspense streaming.
+Next.js 16 storefront application. Handles the product catalog, search, and cart. Built on React 19 Server Components with Suspense streaming.
 
 ## Pages
 
-| Route | Description                                                        |
-| --- |--------------------------------------------------------------------|
-| `/` | Home - hero section, promo banner, featured products grid          |
-| `/search` | Browse & search - full-text search, category filters, pagination   |
+| Route | Description |
+| --- | --- |
+| `/` | Home - hero section, promo banner, featured products grid |
+| `/search` | Browse & search - full-text search, category filters, pagination |
 | `/products/[param]` | Product detail - images, description, stock indicator, add-to-cart |
-| `/cart` | Shopping cart - line items, quantity controls, order summary       |
+| `/cart` | Shopping cart - line items, quantity controls, order summary |
 
 ## Key Patterns
 
-- **Server Components** - every page is a Server Component by default; data is fetched on the server with zero client JS overhead.
-- **Suspense streaming** - each async section (`<PromoBanner>`, `<FeaturedProducts>`, `<StockSection>`) is wrapped in `<Suspense>` so the shell streams immediately while data loads.
-- **`use cache`** - product & cart data use the `use cache` directive with `cacheLife()` for ISR-style freshness.
-- **Server Actions** - cart mutations (`addItemAction`, `updateItemAction`, `removeItemAction`) run server-side and call `updateTag('cart')` to revalidate.
-- **`useTransition` navigations** - `RouterTransitionProvider` wraps `router.push` in `startTransition` for non-blocking route changes with a pending UI.
-- **Dark / Light theming** - `next-themes` + CSS custom properties (oklch); toggle in the header.
-- **Open Graph & Twitter Cards** - every page exports rich `openGraph` / `twitter` metadata; `metadataBase` is set from `VERCEL_PROJECT_PRODUCTION_URL`.
+- **Server Components** - every page is a Server Component by default; data is fetched on the server with zero client JS
+- **Suspense streaming** - each async section (`<PromoBanner>`, `<FeaturedProducts>`, `<StockSection>`) is wrapped in `<Suspense>` so the shell streams right away while data loads
+- **`use cache`** - product & cart data use the `use cache` directive with `cacheLife()` for ISR-style freshness
+- **Server Actions** - cart mutations (`addItemAction`, `updateItemAction`, `removeItemAction`) run server-side and call `updateTag('cart')` to revalidate
+- **`useTransition` navigations** - `RouterTransitionProvider` wraps `router.push` in `startTransition` for non-blocking route changes with a pending state
+- **Dark / Light theming** - `next-themes` + CSS custom properties (oklch); toggle in the header
+- **Open Graph & Twitter Cards** - every page exports `openGraph` / `twitter` metadata; `metadataBase` is set from `VERCEL_PROJECT_PRODUCTION_URL`
 
 ## Source Layout
 

@@ -1,13 +1,13 @@
 # @repo/ui - Shared Design System
 
-Shared React component library for the Vercel Swag Store monorepo. Built on [shadcn/ui](https://ui.shadcn.com/) (New York style) with [Radix UI](https://www.radix-ui.com/) primitives, [CVA](https://cva.style/) variants, and [Tailwind CSS 4](https://tailwindcss.com/) design tokens.
+Shared React component library for the Vercel Swag Store monorepo. Built on [shadcn/ui](https://ui.shadcn.com/) (New York style) with [Radix UI](https://www.radix-ui.com/) primitives, [CVA](https://cva.style/) variants, and [Tailwind CSS 4](https://tailwindcss.com/).
 
 ## Components
 
 | Component | Variants | Description |
 | --- | --- | --- |
 | `Button` | `default`, `destructive`, `outline`, `secondary`, `ghost`, `link` × `default`, `sm`, `lg`, `icon` | CTA button with `asChild` slot support via Radix `Slot` |
-| `Badge` | `default`, `secondary`, `outline`, `success`, `warning`, `danger` | Inline status / category label |
+| `Badge` | `default`, `secondary`, `outline`, `success`, `warning`, `danger` | Status or category label |
 | `Skeleton` | - | Pulse placeholder for loading states |
 
 ## Utilities
@@ -18,7 +18,7 @@ Shared React component library for the Vercel Swag Store monorepo. Built on [sha
 
 ## Design Tokens
 
-`src/styles/globals.css` defines the full oklch color palette (light + dark) consumed by all components:
+`src/styles/globals.css` defines the oklch color palette (light + dark) used by all components:
 
 - **Surfaces** - `--background`, `--card`, `--popover`
 - **Typography** - `--foreground`, `--muted-foreground`
@@ -28,7 +28,7 @@ Shared React component library for the Vercel Swag Store monorepo. Built on [sha
 - **Sidebar** - `--sidebar`, `--sidebar-primary`, `--sidebar-accent`
 - **Radius** - `--radius` (`0.625rem`)
 
-Dark mode is applied via `@media (prefers-color-scheme: dark)` in the base tokens; the web app overrides with a class-based `.dark` variant.
+Dark mode uses `@media (prefers-color-scheme: dark)` in the base tokens. The web app overrides this with a class-based `.dark` variant.
 
 ## Package Exports
 

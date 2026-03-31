@@ -1,6 +1,6 @@
 # Vercel Swag Store
 
-A full-featured e-commerce storefront built with **Next.js 16**, **React 19**, and **Turborepo**. Demonstrates modern React patterns - Server Components, Suspense streaming, `use cache`, Server Actions, and `useTransition` navigations - all deployed on Vercel.
+E-commerce storefront demo built with **Next.js 16**, **React 19**, and **Turborepo**. Uses Server Components, Suspense streaming, `use cache`, and Server Actions. Deployed on Vercel.
 
 Based on the [Next.js Foundations starter](https://github.com/vercel/nextjs-foundations-starter) from the [Vercel Academy - Next.js Foundations](https://vercel.com/academy/nextjs-foundations) course.
 
@@ -27,10 +27,10 @@ pnpm check          # lint + format in one pass
 
 ## Workspaces
 
-| Workspace | Package | Description                                              |
-| --- | --- |----------------------------------------------------------|
-| `apps/web` | `@repo/web` | Next.js storefront - pages, API integration, cart logic  |
-| `packages/ui` | `@repo/ui` | Shared React component library (Button, Badge, Skeleton) |
+| Workspace | Package | Description |
+| --- | --- | --- |
+| `apps/web` | `@repo/web` | Next.js storefront - pages, API integration, cart logic |
+| `packages/ui` | `@repo/ui` | Shared component library (Button, Badge, Skeleton) |
 
 ## Tech Stack
 

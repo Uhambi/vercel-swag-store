@@ -44,7 +44,9 @@ export default async function CartPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <h1 className="font-bold text-2xl text-foreground">Your Cart</h1>
+      <h1 className="font-bold text-2xl text-foreground tracking-tight sm:text-3xl">
+        Your Cart
+      </h1>
       <p className="mt-1 text-muted-foreground text-sm">
         {cart.totalItems} {cart.totalItems === 1 ? 'item' : 'items'}
       </p>

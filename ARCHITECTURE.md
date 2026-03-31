@@ -19,11 +19,13 @@ Turborepo handles task orchestration. Build artifacts go into remote cache, so r
 
 pnpm's `workspace:*` protocol lets the web app consume the UI package as a direct source dependency with no publish step and instant feedback in dev. The non-flat `node_modules` layout prevents phantom dependencies. Content-addressable storage means shared deps like React and TypeScript are stored once on disk no matter how many packages use them.
 
+This structure scales naturally as the project grows. A new storefront (e.g. `apps/mobile`), an admin panel (`apps/admin`), or a backend service (`apps/api`) can be dropped into the same repo and immediately consume shared packages — types, UI components, validation schemas — without any publishing ceremony. Turborepo's task graph automatically picks up new workspaces, so CI pipelines and caching extend to them for free. Teams working on different apps stay in one repository, which keeps cross-cutting changes (auth, shared types, design system updates) atomic and reviewable in a single pull request instead of being scattered across repos.
+
 ---
 
 ## Linting & Formatting
 
-**Biome** handles both linting and formatting in one tool. A single `biome.jsonc` at the root covers the entire monorepo.
+**Biome** handles both linting and formatting in one tool.
 
 Biome runs linting and formatting in a single pass - one command, one config, one dependency. It covers JavaScript, TypeScript, JSX, CSS, and JSON, so there's no need for separate tools for each language. It also handles import sorting and JSX attribute ordering through its assist system.
 
@@ -41,14 +43,14 @@ The `remote` variant puts cache entries on the Vercel edge network, shared acros
 
 ### Cache Profiles
 
-| Data | Profile | Rationale |
-| --- | --- | --- |
-| Product metadata & content | `hours` | Near-static catalog data that changes rarely |
-| Category list | `hours` | Only changes when the catalog is restructured |
-| Featured products | `minutes` | Merchandising can rotate the selection at any time |
-| Promotions | `minutes` | Have scheduled start/end times that need timely reflection |
-| Search results | `minutes` | Must reflect newly added products and stock changes |
-| Cart | `minutes` + `cacheTag('cart')` | Short TTL as a safety net; on-demand invalidation after every mutation |
+| Data | Profile | Rationale                                                                    |
+| --- | --- |------------------------------------------------------------------------------|
+| Product metadata & content | `hours` | Near-static catalog data that changes rarely                                 |
+| Category list | `hours` | Only changes when the catalog is restructured                                |
+| Featured products | `minutes` | Merchandising can rotate the selection at any time                           |
+| Promotions | `minutes` | Have scheduled start/end times that need timely reflection                   |
+| Search results | `minutes` | Must reflect newly added products and stock changes                          |
+| Cart | `minutes` + `cacheTag('cart')` | Short TTL as a safety net, on-demand invalidation after every mutation       |
 | Stock availability | **never cached** | Fetched fresh on every request, streamed via Suspense for real-time accuracy |
 
 Cart mutations call `updateTag('cart')` after each write, which purges the cache entry across all edge nodes globally. The next read is guaranteed fresh. A short `minutes` TTL acts as a safety net, and tag-based purging handles instant consistency on the normal path - so users never see stale cart data.
@@ -62,6 +64,7 @@ Cart mutations call `updateTag('cart')` after each write, which purges the cache
 ## Server / Client Boundary
 
 ```mermaid
+%%{init: {'flowchart': {'nodeSpacing': 80, 'rankSpacing': 120}}}%%
 graph TB
     subgraph Server ["Server Components (default)"]
         Layout["RootLayout"]
@@ -116,6 +119,7 @@ Everything is a Server Component by default. They fetch data, render HTML, and s
 ## Data Flow
 
 ```mermaid
+%%{init: {'flowchart': {'nodeSpacing': 80, 'rankSpacing': 120}}}%%
 flowchart LR
     API["External REST API"]
     Fetch["lib/api.ts - apiFetch()"]
@@ -154,6 +158,7 @@ The cart token lives in a cookie (`sameSite: lax`, 24h TTL matching the API-side
 ### Suspense Streaming
 
 ```mermaid
+%%{init: {'flowchart': {'nodeSpacing': 80, 'rankSpacing': 120}}}%%
 graph TB
     subgraph HomePage ["Home Page"]
         HS["HTML Shell (instant)"]
@@ -169,7 +174,7 @@ graph TB
     end
 
     subgraph ProductPage ["Product Detail"]
-        PS["HTML Shell (instant)"]
+        PS["⏳ loading.tsx (route-level)"]
         PS --> PC2["ProductContent (cached)"]
         PC2 --> Stock["⏳ StockSection (fresh)"]
     end
@@ -188,6 +193,7 @@ graph TB
     style FP_S fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
     style SShell fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
     style SRes fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
+    style PS fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
     style Stock fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
     style CS fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
     style CartB fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0

@@ -31,7 +31,7 @@ export default function SearchPage({
   searchParams: SearchParams;
 }) {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="font-bold text-2xl text-foreground tracking-tight sm:text-3xl">

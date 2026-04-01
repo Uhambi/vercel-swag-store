@@ -16,7 +16,7 @@ Next.js 16 storefront application. Handles the product catalog, search, and cart
 - **Server Components** - every page is a Server Component by default, data is fetched on the server with zero client JS
 - **Suspense streaming** - each async section (`<PromoBanner>`, `<FeaturedProducts>`, `<StockSection>`) is wrapped in `<Suspense>` so the shell streams right away while data loads
 - **`use cache`** - product & stock data use the `use cache` directive with `cacheLife()` for ISR-style freshness
-- **Zustand cart store** - cart state lives in `useCartStore`, `CartFetcher` (async RSC) fetches the cart on page load and hydrates the store via `CartStoreInitializer`, server action responses return `Cart` directly and update the store — no re-fetch needed
+- **Zustand cart store** - cart state lives in `useCartStore`, `CartFetcher` (async RSC) fetches the cart on page load and hydrates the store via `CartStoreInitializer`, server action responses return `Cart` directly and update the store - no re-fetch needed
 - **Server Actions** - cart mutations (`addItemAction`, `updateItemAction`, `removeItemAction`) run server-side and return the updated `Cart` so the client store stays in sync
 - **`useTransition` navigations** - `RouterTransitionProvider` wraps `router.push` in `startTransition` for non-blocking route changes with a pending state
 - **Dark / Light theming** - `next-themes` + CSS custom properties (oklch), toggle in the header

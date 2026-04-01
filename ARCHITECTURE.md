@@ -19,7 +19,7 @@ Turborepo handles task orchestration. Build artifacts go into remote cache, so r
 
 pnpm's `workspace:*` protocol lets the web app consume the UI package as a direct source dependency with no publish step and instant feedback in dev. The non-flat `node_modules` layout prevents phantom dependencies. Content-addressable storage means shared deps like React and TypeScript are stored once on disk no matter how many packages use them.
 
-This structure scales naturally as the project grows. A new storefront (e.g. `apps/mobile`), an admin panel (`apps/admin`), or a backend service (`apps/api`) can be dropped into the same repo and immediately consume shared packages — types, UI components, validation schemas — without any publishing ceremony. Turborepo's task graph automatically picks up new workspaces, so CI pipelines and caching extend to them for free. Teams working on different apps stay in one repository, which keeps cross-cutting changes (auth, shared types, design system updates) atomic and reviewable in a single pull request instead of being scattered across repos.
+This structure scales naturally as the project grows. A new storefront (e.g. `apps/mobile`), an admin panel (`apps/admin`), or a backend service (`apps/api`) can be dropped into the same repo and immediately consume shared packages - types, UI components, validation schemas - without any publishing ceremony. Turborepo's task graph automatically picks up new workspaces, so CI pipelines and caching extend to them for free. Teams working on different apps stay in one repository, which keeps cross-cutting changes (auth, shared types, design system updates) atomic and reviewable in a single pull request instead of being scattered across repos.
 
 ---
 
@@ -161,7 +161,7 @@ All communication with the external REST API goes through a single `apiFetch<T>(
 
 ### Cart Token Lifecycle
 
-The cart token lives in a cookie (`sameSite: lax`, 24h TTL matching the API-side expiry). It's not `httpOnly` — with the current architecture the token is read exclusively server-side via `getCartToken()`, but keeping it JS-accessible avoids a breaking change should any future client-side logic need it.
+The cart token lives in a cookie (`sameSite: lax`, 24h TTL matching the API-side expiry). It's not `httpOnly` - with the current architecture the token is read exclusively server-side via `getCartToken()`, but keeping it JS-accessible avoids a breaking change should any future client-side logic need it.
 
 ---
 

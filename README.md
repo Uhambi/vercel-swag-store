@@ -39,6 +39,7 @@ pnpm check          # lint + format in one pass
 | Framework | [Next.js 16](https://nextjs.org/) (App Router, React 19) |
 | Language | [TypeScript 5.9](https://www.typescriptlang.org/) |
 | Styling | [Tailwind CSS 4](https://tailwindcss.com/) + CSS custom properties |
+| State management | [Zustand](https://zustand-demo.pmnd.rs/) |
 | UI primitives | [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/) |
 | Icons | [Lucide React](https://lucide.dev/) |
 | Fonts | [Geist Sans](https://vercel.com/font) |

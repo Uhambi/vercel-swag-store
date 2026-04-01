@@ -4,7 +4,7 @@ import { Button } from '@repo/ui/components/button';
 import { useState } from 'react';
 import { addItemAction } from '@/actions/cart';
 import { QuantityStepper } from '@/components/quantity-stepper';
-import { useAction } from '@/hooks/use-action';
+import { useCartAction } from '@/hooks/use-cart-action';
 
 interface AddToCartFormProps {
   inStock: boolean;
@@ -17,22 +17,29 @@ export function AddToCartForm({
   inStock,
   stock,
 }: AddToCartFormProps) {
-  const maxQty = Math.min(stock, 10);
   const [quantity, setQuantity] = useState(1);
-  const { isPending, execute } = useAction();
+  const [reservedQty, setReservedQty] = useState(0);
+  const { isPending, execute } = useCartAction();
+
+  const effectiveStock = Math.max(0, stock - reservedQty);
+  const effectiveInStock = inStock && effectiveStock > 0;
 
   function decrement() {
     setQuantity((q) => Math.max(1, q - 1));
   }
 
   function increment() {
-    setQuantity((q) => Math.min(maxQty, q + 1));
+    setQuantity((q) => Math.min(effectiveStock, q + 1));
   }
 
   function handleSubmit() {
     execute(async () => {
-      await addItemAction(productId, quantity);
-      setQuantity(1);
+      const cart = await addItemAction(productId, quantity);
+      if (cart) {
+        setReservedQty((prev) => prev + quantity);
+        setQuantity(1);
+      }
+      return cart;
     });
   }
 
@@ -40,15 +47,18 @@ export function AddToCartForm({
     if (isPending) {
       return 'Adding…';
     }
-    return inStock ? 'Add to Cart' : 'Out of Stock';
+    if (!effectiveInStock) {
+      return 'Out of Stock';
+    }
+    return 'Add to Cart';
   }
 
   return (
     <div className="flex flex-col gap-4">
       {/* Quantity Stepper */}
       <QuantityStepper
-        decrementDisabled={!inStock || quantity <= 1}
-        incrementDisabled={!inStock || quantity >= maxQty}
+        decrementDisabled={!effectiveInStock || quantity <= 1}
+        incrementDisabled={!effectiveInStock || quantity >= effectiveStock}
         label={<span className="mr-2 text-muted-foreground text-sm">Qty</span>}
         onDecrement={decrement}
         onIncrement={increment}
@@ -58,7 +68,7 @@ export function AddToCartForm({
       {/* Add to Cart Button */}
       <Button
         className="w-full cursor-pointer"
-        disabled={!inStock || isPending}
+        disabled={!effectiveInStock || isPending}
         onClick={handleSubmit}
         size="lg"
       >

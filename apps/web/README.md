@@ -13,20 +13,21 @@ Next.js 16 storefront application. Handles the product catalog, search, and cart
 
 ## Key Patterns
 
-- **Server Components** - every page is a Server Component by default; data is fetched on the server with zero client JS
+- **Server Components** - every page is a Server Component by default, data is fetched on the server with zero client JS
 - **Suspense streaming** - each async section (`<PromoBanner>`, `<FeaturedProducts>`, `<StockSection>`) is wrapped in `<Suspense>` so the shell streams right away while data loads
-- **`use cache`** - product & cart data use the `use cache` directive with `cacheLife()` for ISR-style freshness
-- **Server Actions** - cart mutations (`addItemAction`, `updateItemAction`, `removeItemAction`) run server-side and call `updateTag('cart')` to revalidate
+- **`use cache`** - product & stock data use the `use cache` directive with `cacheLife()` for ISR-style freshness
+- **Zustand cart store** - cart state lives in `useCartStore`, `CartFetcher` (async RSC) fetches the cart on page load and hydrates the store via `CartStoreInitializer`, server action responses return `Cart` directly and update the store — no re-fetch needed
+- **Server Actions** - cart mutations (`addItemAction`, `updateItemAction`, `removeItemAction`) run server-side and return the updated `Cart` so the client store stays in sync
 - **`useTransition` navigations** - `RouterTransitionProvider` wraps `router.push` in `startTransition` for non-blocking route changes with a pending state
-- **Dark / Light theming** - `next-themes` + CSS custom properties (oklch); toggle in the header
-- **Open Graph & Twitter Cards** - every page exports `openGraph` / `twitter` metadata; `metadataBase` is set from `VERCEL_PROJECT_PRODUCTION_URL`
+- **Dark / Light theming** - `next-themes` + CSS custom properties (oklch), toggle in the header
+- **Open Graph & Twitter Cards** - every page exports `openGraph` / `twitter` metadata, `metadataBase` is set from `VERCEL_PROJECT_PRODUCTION_URL`
 
 ## Source Layout
 
 ```
 src/
 ├── actions/
-│   └── cart.ts                    # Server Actions - add / update / remove cart items
+│   └── cart.ts                    # Server Actions - add / update / remove cart items, returns Cart
 ├── app/
 │   ├── layout.tsx                 # Root layout - Geist font, theme, header/footer, OG metadata
 │   ├── globals.css                # Tailwind 4 + design tokens (oklch)
@@ -51,35 +52,40 @@ src/
 │   │   └── use-search-query.ts    # Hook - derive search params from URL
 │   ├── products/[param]/
 │   │   ├── page.tsx               # Product detail - generateStaticParams + generateMetadata
-│   │   ├── product-content.tsx    # Image gallery + description
-│   │   ├── add-to-cart-form.tsx   # Add-to-cart form with quantity
+│   │   ├── product-content.tsx    # Image gallery + description (cached)
+│   │   ├── add-to-cart-form.tsx   # Add-to-cart form with optimistic quantity tracking
 │   │   ├── stock-section.tsx      # Suspense wrapper for stock indicator
-│   │   ├── stock-indicator.tsx    # Real-time stock badge (in-stock / low / out)
+│   │   ├── stock-indicator.tsx    # Stock badge (in-stock / low / out)
 │   │   └── loading.tsx            # Instant loading skeleton
 │   └── cart/
-│       ├── page.tsx               # Cart page - items list + order summary
+│       ├── page.tsx               # Cart page - metadata + RSC shell
+│       ├── cart-page-client.tsx   # Client cart page - reads from Zustand store
 │       ├── cart-item.tsx          # Single cart line (quantity stepper, remove)
 │       ├── empty-cart.tsx         # Empty-state illustration
-│       └── loading.tsx            # Instant loading skeleton
+│       └── cart-loading.tsx       # Skeleton rendered by CartPageClient while Zustand initializes
 ├── components/                    # Shared presentational components
-│   ├── header.tsx                 # Navigation bar + cart badge + theme toggle
+│   ├── header.tsx                 # Navigation bar + CartFetcher + theme toggle
+│   ├── cart-store-initializer.tsx # Client component - hydrates Zustand cart store on mount
+│   ├── cart-icon-button.tsx       # Cart icon with badge - reads totalItems from Zustand
 │   ├── footer.tsx                 # Site footer
 │   ├── nav-link.tsx               # Active-aware navigation link
 │   ├── mobile-menu.tsx            # Slide-out mobile navigation
 │   ├── product-card.tsx           # Reusable product card (home & search)
-│   ├── quantity-stepper.tsx       # +/− stepper used in cart
+│   ├── quantity-stepper.tsx       # +/− stepper used in cart and product page
 │   ├── pagination.tsx             # Page navigation (server)
 │   ├── transition-pagination.tsx  # Page navigation with useTransition
 │   ├── router-transition-provider.tsx  # useTransition context for navigations
 │   ├── theme-provider.tsx         # next-themes provider wrapper
 │   └── theme-toggle.tsx           # Light / dark mode toggle button
 ├── hooks/
-│   ├── use-action.ts              # useTransition wrapper for Server Actions
+│   ├── use-cart-action.ts         # useTransition wrapper for cart actions, syncs Zustand store
 │   ├── use-debounce.ts            # Debounced value hook (search input)
 │   └── use-click-outside.ts      # Click-outside detector (mobile menu)
+├── store/
+│   └── cart.ts                    # Zustand cart store (cart · status · initialize · setCart)
 └── lib/
     ├── api.ts                     # REST client - products, categories, promotions, cart
-    ├── cart.ts                    # Cart token management (cookies)
+    ├── cart.ts                    # Cart token management (cookies) + ensureCart
     ├── format.ts                  # formatPrice helper
     └── types.ts                   # Shared TypeScript interfaces
 ```
@@ -88,7 +94,7 @@ src/
 
 ```bash
 # From the monorepo root
-pnpm dev            # starts all workspaces; web → http://localhost:3000
+pnpm dev            # starts all workspaces, web → http://localhost:3000
 
 # Or run only this app
 pnpm --filter @repo/web dev

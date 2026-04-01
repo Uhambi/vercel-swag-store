@@ -1,10 +1,12 @@
-import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { CartIconButton } from '@/components/cart-icon-button';
+import { CartStoreInitializer } from '@/components/cart-store-initializer';
 import { MobileMenu } from '@/components/mobile-menu';
 import { NavLink } from '@/components/nav-link';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { getCachedCart, getCartToken } from '@/lib/cart';
+import { getCart } from '@/lib/api';
+import { getCartToken } from '@/lib/cart';
 
 // Vercel Logo
 function VercelLogo({ className }: { className?: string }) {
@@ -24,39 +26,17 @@ function VercelLogo({ className }: { className?: string }) {
 const navLinkClass =
   'rounded-md px-3 py-2 font-medium text-muted-foreground text-sm transition-colors hover:bg-accent hover:text-foreground data-active:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/70';
 
-// Cart Icon
-function CartIcon({ count }: { count: number }) {
-  return (
-    <Link
-      aria-label={
-        count > 0 ? `Cart - ${count} item${count === 1 ? '' : 's'}` : 'Cart'
-      }
-      className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/70"
-      href="/cart"
-    >
-      <span className="relative block">
-        <ShoppingCart className="size-5" />
-        {count > 0 && (
-          <span className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-primary font-bold text-[10px] text-primary-foreground leading-none">
-            {count > 99 ? '99+' : count}
-          </span>
-        )}
-      </span>
-    </Link>
-  );
-}
-
-// Cart Count
-async function CartCount() {
+// Cart init
+async function CartFetcher() {
   try {
     const token = await getCartToken();
     if (!token) {
-      return <CartIcon count={0} />;
+      return <CartStoreInitializer initialCart={null} />;
     }
-    const { data } = await getCachedCart(token);
-    return <CartIcon count={data.totalItems} />;
+    const { data } = await getCart(token);
+    return <CartStoreInitializer initialCart={data} />;
   } catch {
-    return <CartIcon count={0} />;
+    return <CartStoreInitializer initialCart={null} />;
   }
 }
 
@@ -94,9 +74,10 @@ export function Header() {
         {/* Right: Theme + Cart + Mobile menu */}
         <div className="flex items-center gap-1">
           <ThemeToggle />
-          <Suspense fallback={<CartIcon count={0} />}>
-            <CartCount />
+          <Suspense fallback={null}>
+            <CartFetcher />
           </Suspense>
+          <CartIconButton />
           <MobileMenu />
         </div>
       </div>

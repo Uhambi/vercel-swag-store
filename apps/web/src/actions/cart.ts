@@ -1,43 +1,47 @@
 'use server';
 
-import { updateTag } from 'next/cache';
 import { addToCart, removeCartItem, updateCartItem } from '@/lib/api';
 import { ensureCart, getCartToken } from '@/lib/cart';
+import type { Cart } from '@/lib/types';
 
-// Errors logging is handled in the api layer
-
-export async function addItemAction(productId: string, quantity: number) {
+export async function addItemAction(
+  productId: string,
+  quantity: number,
+): Promise<Cart | null> {
   try {
     const token = await ensureCart();
-    await addToCart(token, productId, quantity);
-    updateTag('cart');
+    const { data } = await addToCart(token, productId, quantity);
+    return data;
   } catch {
-    // failed to add item
+    return null;
   }
 }
 
-export async function updateItemAction(itemId: string, quantity: number) {
+export async function updateItemAction(
+  itemId: string,
+  quantity: number,
+): Promise<Cart | null> {
   const token = await getCartToken();
   if (!token) {
-    return;
+    return null;
   }
   try {
-    await updateCartItem(token, itemId, quantity);
-    updateTag('cart');
+    const { data } = await updateCartItem(token, itemId, quantity);
+    return data;
   } catch {
-    // failed to update item
+    return null;
   }
 }
 
-export async function removeItemAction(itemId: string) {
+export async function removeItemAction(itemId: string): Promise<Cart | null> {
   const token = await getCartToken();
   if (!token) {
-    return;
+    return null;
   }
   try {
-    await removeCartItem(token, itemId);
-    updateTag('cart');
+    const { data } = await removeCartItem(token, itemId);
+    return data;
   } catch {
-    // failed to remove item
+    return null;
   }
 }

@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { removeItemAction, updateItemAction } from '@/actions/cart';
 import { QuantityStepper } from '@/components/quantity-stepper';
-import { useAction } from '@/hooks/use-action';
+import { useCartAction } from '@/hooks/use-cart-action';
 import { formatPrice } from '@/lib/format';
 import type { CartItem as CartItemType } from '@/lib/types';
 
@@ -17,7 +17,7 @@ interface CartItemProps {
 export function CartItem({ item }: CartItemProps) {
   const { product, quantity, lineTotal, productId } = item;
   const image = product.images[0];
-  const { isPending, execute } = useAction();
+  const { isPending, execute } = useCartAction();
 
   function handleDecrement() {
     if (quantity <= 1) {

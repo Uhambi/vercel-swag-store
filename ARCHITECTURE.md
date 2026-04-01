@@ -50,10 +50,10 @@ The `remote` variant puts cache entries on the Vercel edge network, shared acros
 | Featured products | `minutes` | Merchandising can rotate the selection at any time                           |
 | Promotions | `minutes` | Have scheduled start/end times that need timely reflection                   |
 | Search results | `minutes` | Must reflect newly added products and stock changes                          |
-| Cart | `minutes` + `cacheTag('cart')` | Short TTL as a safety net, on-demand invalidation after every mutation       |
+| Cart | **not cached** | Fetched fresh on initial page load, state managed client-side via Zustand    |
 | Stock availability | **never cached** | Fetched fresh on every request, streamed via Suspense for real-time accuracy |
 
-Cart mutations call `updateTag('cart')` after each write, which purges the cache entry across all edge nodes globally. The next read is guaranteed fresh. A short `minutes` TTL acts as a safety net, and tag-based purging handles instant consistency on the normal path - so users never see stale cart data.
+Cart state is managed entirely client-side by **Zustand**. `CartFetcher` - an async RSC inside the header's `<Suspense>` - fetches the cart once on page load and hydrates the store via `CartStoreInitializer`. All subsequent updates (add / update / remove) come directly from server action return values - no cache layer involved, no re-fetch. Stock is always fetched fresh per request, the `AddToCartForm` tracks locally added quantity in `reservedQty` state so the stepper reflects the correct remaining availability without waiting for a stock re-fetch.
 
 ### Component Caching
 
@@ -71,14 +71,14 @@ graph TB
         Home["HomePage"]
         Search["SearchPage"]
         Product["ProductDetailPage"]
-        Cart["CartPage"]
+        CartPage["CartPage (metadata shell)"]
         Header["Header"]
+        CartFetcher["CartFetcher"]
         FP["FeaturedProducts"]
         PB["PromoBanner"]
         SR["SearchResults"]
         PC["ProductContent"]
         SS["StockSection"]
-        CC["CartCount"]
     end
 
     subgraph Client ["Client Components ('use client')"]
@@ -90,13 +90,23 @@ graph TB
         CI["CartItem"]
         MM["MobileMenu"]
         TPag["TransitionPagination"]
+        CSI["CartStoreInitializer"]
+        CIB["CartIconButton"]
+        CPC["CartPageClient"]
+    end
+
+    subgraph Store ["Zustand (client-side)"]
+        ZS["useCartStore\n(cart · status)"]
     end
 
     Layout --> RTP
     Layout --> TP
     TP --> TT
-    Header --> CC
-    Header --> MM
+    Header --> CartFetcher
+    Header --> CIB
+    CartFetcher --> CSI
+    CSI -- "initialize(cart)" --> ZS
+    CIB -- "reads totalItems" --> ZS
     Home --> FP
     Home --> PB
     Search --> SSC
@@ -104,13 +114,18 @@ graph TB
     Product --> PC
     PC --> SS
     SS --> ATCF
-    Cart --> CI
+    ATCF -- "setCart(cart)" --> ZS
+    CartPage --> CPC
+    CPC -- "reads cart / status" --> ZS
+    CPC --> CI
+    CI -- "setCart(cart)" --> ZS
 
     style Server fill:#1a1a2e,stroke:#4a4a6a,color:#e0e0e0
     style Client fill:#0d2137,stroke:#1e5a8a,color:#e0e0e0
+    style Store fill:#0d2d1a,stroke:#1e8a4a,color:#e0e0e0
 ```
 
-Everything is a Server Component by default. They fetch data, render HTML, and ship zero client JavaScript. Product listings, detail pages, and cart summaries are pure HTML - less JS for the browser to download and parse, direct API access without client-to-server roundtrips, and API tokens that never leave the server.
+Everything is a Server Component by default. They fetch data, render HTML, and ship zero client JavaScript. Product listings and detail pages are pure HTML - less JS for the browser to download and parse, direct API access without client-to-server roundtrips, and API tokens that never leave the server.
 
 `'use client'` is added only where the browser is actually needed: form submissions, navigation transitions, theme toggling, search input state, and error boundaries.
 
@@ -124,10 +139,10 @@ flowchart LR
     API["External REST API"]
     Fetch["lib/api.ts - apiFetch()"]
     Cache["Remote Cache (Vercel Edge)"]
-    SC["Server Components"]
+    SC["Server Components\n(products · search · stock)"]
     CC["Client Components"]
-    SA["Server Actions"]
-    Purge["updateTag('cart')"]
+    SA["Server Actions\n(cart mutations)"]
+    ZS["Zustand Store\n(cart state)"]
 
     API <--> Fetch
     Fetch --> Cache
@@ -135,17 +150,18 @@ flowchart LR
     SC --> CC
     CC -- "mutation" --> SA
     SA --> Fetch
-    SA --> Purge
-    Purge -- "invalidates" --> Cache
+    SA -- "returns Cart" --> ZS
+    ZS --> CC
 
     style Cache fill:#1a2e1a,stroke:#4a6a4a,color:#e0e0e0
+    style ZS fill:#0d2d1a,stroke:#1e8a4a,color:#e0e0e0
 ```
 
 All communication with the external REST API goes through a single `apiFetch<T>()` wrapper. Deployment protection headers and cart tokens are injected automatically, every failure is parsed into a typed `ApiError` with `code`, `message`, and `status`, and generics propagate the expected response shape so contract mismatches are caught at compile time.
 
 ### Cart Token Lifecycle
 
-The cart token lives in a cookie (`sameSite: lax`, 24h TTL matching the API-side expiry). It's deliberately not `httpOnly` - client-side JavaScript needs to read it for optimistic cart badge updates without an extra server roundtrip.
+The cart token lives in a cookie (`sameSite: lax`, 24h TTL matching the API-side expiry). It's not `httpOnly` — with the current architecture the token is read exclusively server-side via `getCartToken()`, but keeping it JS-accessible avoids a breaking change should any future client-side logic need it.
 
 ---
 
@@ -180,13 +196,16 @@ graph TB
     end
 
     subgraph CartPage ["Cart Page"]
-        CS["⏳ loading.tsx (route-level)"]
-        CS --> CartContent["Cart items + order summary"]
+        CS["HTML Shell (instant)"]
+        CS --> CPC2["CartPageClient"]
+        CPC2 --> CartSkel["Skeleton (while store initializes)"]
+        CPC2 --> CartContent["Items + order summary\n(from Zustand store)"]
     end
 
     subgraph HeaderComp ["Header (every page)"]
         HH["Nav + Logo (instant)"]
-        HH --> CartB["⏳ CartCount (badge)"]
+        HH --> CIB2["CartIconButton (Zustand, instant)"]
+        HH --> CartF["⏳ CartFetcher (store init, invisible)"]
     end
 
     style PB_S fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
@@ -195,15 +214,13 @@ graph TB
     style SRes fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
     style PS fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
     style Stock fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
-    style CS fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
-    style CartB fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
+    style CartSkel fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
+    style CartF fill:#2d1f0e,stroke:#8a6a2e,color:#e0e0e0
 ```
 
 > ⏳ = Suspense boundary with a co-located skeleton fallback
 
 Every page streams its shell immediately, and async sections resolve independently. The user sees the page structure right away - hero, nav, headings render without waiting for data. A slow stock API doesn't block product images from appearing. Each Suspense boundary has a co-located skeleton that matches the final layout, which keeps CLS close to zero.
-
-Route-level `loading.tsx` files in `/cart` and `/products/[param]` cover full-page navigations when the entire page is a cache miss.
 
 ---
 
@@ -248,7 +265,7 @@ The current page stays fully interactive while the next route loads - no frozen 
 
 The same `useTransition` pattern shows up in two more places:
 
-- **`useAction` hook** - wraps Server Action calls, giving components an `isPending` flag for optimistic UI ("Adding..." on the cart button)
+- **`useCartAction` hook** - wraps cart Server Action calls in `useTransition`, after each action resolves the returned `Cart` is written directly into the Zustand store, keeping the header badge and cart page in sync without a re-fetch
 - **`TransitionPagination`** - composes the server-rendered Pagination with `useRouterTransition` for non-blocking page switches in search results
 
 ---

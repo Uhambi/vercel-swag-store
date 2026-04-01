@@ -1,7 +1,5 @@
-import { cacheLife, cacheTag } from 'next/cache';
 import { cookies } from 'next/headers';
-import { createCart, getCart } from '@/lib/api';
-import type { ApiResponse, Cart } from '@/lib/types';
+import { createCart } from '@/lib/api';
 
 export async function getCartToken(): Promise<string | undefined> {
   const cookieStore = await cookies();
@@ -24,11 +22,4 @@ export async function ensureCart(): Promise<string> {
   });
 
   return token;
-}
-
-export async function getCachedCart(token: string): Promise<ApiResponse<Cart>> {
-  'use cache: remote';
-  cacheTag('cart');
-  cacheLife('minutes');
-  return await getCart(token);
 }
